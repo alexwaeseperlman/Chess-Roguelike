@@ -51,7 +51,11 @@ public class Renderer implements RenderObject {
     ArrayList<Pixel> pixels = new ArrayList<Pixel>();
     for (RenderObject obj : objects) {
       for (Pixel p : obj.draw()) {
-        pixels.add(p);
+        p.x -= left;
+        p.y -= top;
+        if (p.x < width && p.x >= 0 && p.y < height && p.y >= 0) {
+            pixels.add(p);
+        }
       }
     }
     // Sort pixels by their layer. This means that pixels with higher layer values will be painted to the buffer later
@@ -72,7 +76,6 @@ public class Renderer implements RenderObject {
   @Override
   public Pixel[] draw() {
     // Ensure that pixels are only drawn to the alternate buffer
-    if (!inBuffer) toggleBuffer();
     ArrayList<Pixel> out = new ArrayList<Pixel>();
     refresh();
     for (int i = 0; i < screen.size(); i++) {
@@ -84,6 +87,7 @@ public class Renderer implements RenderObject {
   }
   
   public void refreshScreen() {
+    if (!inBuffer) toggleBuffer();
     // Find each pixel in the fb that is different and update it
     for (int i = 0; i < height; i++) {
       // Store whether or not the cursor was moved to the last character's position
@@ -122,14 +126,14 @@ public class Renderer implements RenderObject {
         System.out.printf("\u001B7");
 
         // Switch to the alternate screen buffer
-        System.out.printf("\u001B[?1047h");
+        System.out.printf("\u001B[?47h");
 
         // Hide the cursor
         System.out.printf("\u001B[?25l");
     }
     else {
         // Switch back to the standard screen buffer
-        System.out.printf("\u001B[?1047l");
+        System.out.printf("\u001B[?47l");
 
         // Show the cursor
         System.out.printf("\u001B[?25h");
