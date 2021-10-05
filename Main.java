@@ -25,22 +25,8 @@ class Main {
 
     render.objects.add(r1);
     render.objects.add(r2);
-    //System.out.printf("\u001B[12l");
-    /*
-    for (int i = 0; i < 5; i++) {
-      render.refresh();
-      render.refreshScreen();
-  
-      r1.x--;
-      wait(1000);
-  
-      render.refresh();
-      render.refreshScreen();
-
-      r1.x++;
-      wait(1000);
-    }
-    */
+    render.refresh();
+    render.refreshScreen();
   }
   public static void wait(int ms) {
     try {
