@@ -5,6 +5,7 @@ public class Glyph {
   Color fg, bg;
   char shape;
   boolean transparent = false;
+
   public Glyph(char shape) {
     this(shape, Color.WHITE, Color.BLACK);
   }

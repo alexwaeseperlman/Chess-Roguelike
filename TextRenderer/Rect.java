@@ -16,13 +16,13 @@ public class Rect implements RenderObject {
   public Pixel[] draw() {
     ArrayList<Pixel> arr = new ArrayList<Pixel>();
     for (int i = 0; i <= width; i++) {
-      arr.add(new Pixel('-', x+i, y, layer));
-      arr.add(new Pixel('-', x+i, y+height, layer));
+      arr.add(new Pixel('—', x+i, y, layer));
+      arr.add(new Pixel('—', x+i, y+height, layer));
     }
 
     for (int i = 0; i <= height; i++) {
-      arr.add(new Pixel('|', x, y+i, layer));
-      arr.add(new Pixel('|', x+width, y+i, layer));
+      arr.add(new Pixel('│', x, y+i, layer));
+      arr.add(new Pixel('│', x+width, y+i, layer));
     }
 
     for (int i = 1; i < height; i++) {
