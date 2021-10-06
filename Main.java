@@ -4,14 +4,24 @@ import Inputs.*;
 class Main {
   public static void main(String[] args) {
     Rect r1 = new Rect(2, 3, 3, 3, 0);
-    Rect r2 = new Rect(6, 4, 3, 3, 0);
-    Renderer render = new Renderer(30, 10); 
+    Point r2 = new Point(new Glyph('A', Color.BLUE, Color.BLACK), 4, 3, 2);
+    
+    Text t = new Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla non ultricies turpis, eu molestie turpis. Mauris vitae augue ultrices, ultrices felis quis, facilisis arcu. Duis ac lacinia tellus. In massa sapien, accumsan a velit ut, hendrerit sollicitudin mi. In auctor purus est. Sed dictum turpis odio, non euismod lorem eleifend dapibus. Donec elementum velit finibus urna commodo fermentum.", 15, 0, 20);
+    t.fg = Color.RED;
+    t.layer = 1;
+
+    Renderer render = new Renderer(40, 20); 
     Input inputs = new Input(System.in);
 
     inputs.addListener(new Input.Listener() {
         @Override
         public void keyPressed(char c) {
-            r1.x++;
+            switch (c) {
+                case 'h': r2.x--; break;
+                case 'l': r2.x++; break;
+                case 'k': r2.y--; break;
+                case 'j': r2.y++; break;
+            }
             render.refresh();
             render.refreshScreen();
             if (c == '{') {
@@ -23,6 +33,7 @@ class Main {
 
     render.objects.add(r1);
     render.objects.add(r2);
+    render.objects.add(t);
     render.refresh();
     render.refreshScreen();
     inputs.open();

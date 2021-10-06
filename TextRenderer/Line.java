@@ -3,7 +3,7 @@ package TextRenderer;
 import java.util.ArrayList;
 
 class Line implements RenderObject {
-  int x1, y1, x2, y2;
+  public int x1, y1, x2, y2;
   int layer;
   boolean diagonal, vertical_first;
 
@@ -15,7 +15,6 @@ class Line implements RenderObject {
     if (x1 > x2){
       this.x1
     }
-    
     
     this.x1 = x1;
     this.y1 = y1;

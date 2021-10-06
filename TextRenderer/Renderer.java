@@ -52,7 +52,7 @@ public class Renderer implements RenderObject {
     for (RenderObject obj : objects) {
       for (Pixel p : obj.draw()) {
         p.x -= left;
-        p.y -= top;
+        p.y -= top-1;
         if (p.x < width && p.x >= 0 && p.y < height && p.y >= 0) {
             pixels.add(p);
         }
