@@ -3,23 +3,26 @@ package TextRenderer;
 import java.util.ArrayList;
 
 class Line implements RenderObject {
-  public int x1, y1, x2, y2;
+  int x1, y1, x2, y2;
   int layer;
   boolean diagonal, vertical_first;
 
-  public Line(int x1, int y1, int x2, int y2){
-    Line(x1, y1, x2, y2, false, true);
+  public Line(int x1, int y1, int x2, int y2, int layer){
+    Line(x1, y1, x2, y2, layer, false, true);
   }
 
   public Line(int x1, int y1, int x2, int y2, int layer, boolean diagonal, boolean vertical_first) {
     if (x1 > x2){
-      this.x1
+      this.x1 = x2;
+      this.y1 = y2;
+      this.x2 = x1;
+      this.y2 = y1;
+    } else{
+      this.x1 = x1;
+      this.y1 = y1;
+      this.x2 = x2;
+      this.y2 = y2;
     }
-    
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
 
     this.layer = layer;
     this.diagonal = diagonal;
