@@ -40,7 +40,7 @@ public class Renderer implements RenderObject {
     for (int i = 0; i < height; i++) {
       out.add(new ArrayList<Glyph>());
       for (int j = 0; j < width; j++) {
-        out.get(i).add(new Glyph());
+        out.get(i).add(new Glyph(' '));
       }
     }
 
@@ -52,7 +52,7 @@ public class Renderer implements RenderObject {
     for (RenderObject obj : objects) {
       for (Pixel p : obj.draw()) {
         p.x -= left;
-        p.y -= top-1;
+        p.y -= top;
         if (p.x < width && p.x >= 0 && p.y < height && p.y >= 0) {
             pixels.add(p);
         }
@@ -71,6 +71,7 @@ public class Renderer implements RenderObject {
     for (Pixel p : pixels) {
       if (!p.c.transparent) fb.get(p.y).set(p.x, p.c);
     }
+	refreshScreen();
   }
 
   @Override
@@ -86,7 +87,7 @@ public class Renderer implements RenderObject {
     return out.toArray(new Pixel[out.size()]);
   }
   
-  public void refreshScreen() {
+  void refreshScreen() {
     if (!inBuffer) toggleBuffer();
     // Find each pixel in the fb that is different and update it
     for (int i = 0; i < height; i++) {
@@ -96,18 +97,17 @@ public class Renderer implements RenderObject {
       
       for (int j = 0; j < width; j++) {
         Glyph g = fb.get(i).get(j);
-        if (g != screen.get(i).get(j)) {
+        if (!g.equals(screen.get(i).get(j))) {
           if (!moved) {
-            moveCursor(j, i);
+            moveCursor(j+1, i+1);
             moved = true;
           }
-          System.out.print(Color.color(g.shape, g.fg, g.bg));
+		  System.out.print(g.draw());
         }
         else {
           moved = false;
         }
       }
-      System.out.println();
     }
     screen = fb;
     fb = blankScreen();

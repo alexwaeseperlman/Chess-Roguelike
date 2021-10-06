@@ -17,4 +17,15 @@ public class Glyph {
     this.bg = bg;
     this.shape = shape;
   }
+  public String draw() {
+	  return draw(true);
+  }
+  public String draw(boolean color) {
+	if (color) return Color.color(shape, fg, bg);
+	return "" + shape;
+  }
+
+  public boolean equals(Glyph other) {
+	  return other.shape == shape && other.fg.equals(fg) && other.bg.equals(bg);
+  }
 }

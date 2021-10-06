@@ -38,4 +38,8 @@ public class Color {
   public static String color(String s, Color fg, Color bg) {
     return fg.escapeCode(false) + bg.escapeCode(true) + s + RESET;
   }
+
+  public boolean equals(Color other) {
+	  return r == other.r && g == other.g && b == other.b;
+  }
 }
