@@ -5,6 +5,9 @@ public class Text implements RenderObject {
     public String content, delimiter;
     public int x, y, width, layer;
     public Color fg = Color.WHITE, bg = Color.BLACK;
+	public Text(String s, int x, int y, int width, int layer) {
+		this(s, x, y, width, " ", layer, Color.WHITE, Color.BLACK);
+	}
     public Text(String s, int x, int y, int width, String delimeter, int layer, Color fg, Color bg) {
         this.content = s;
         this.x = x;

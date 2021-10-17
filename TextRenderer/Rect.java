@@ -27,7 +27,7 @@ public class Rect implements RenderObject {
 
     for (int i = 1; i < height; i++) {
       for (int j = 1; j < width; j++) {
-        arr.add(new Pixel('.', x+i, y+j, layer));
+        arr.add(new Pixel('.', x+j, y+i, layer));
       }
     }
 

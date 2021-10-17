@@ -71,7 +71,6 @@ public class Renderer implements RenderObject {
 		for (Pixel p : pixels) {
 			if (!p.c.transparent) fb.get(p.y).set(p.x, p.c);
 		}
-		refreshScreen();
 	}
 
 	@Override
@@ -80,14 +79,20 @@ public class Renderer implements RenderObject {
 		ArrayList<Pixel> out = new ArrayList<Pixel>();
 		refresh();
 		for (int i = 0; i < screen.size(); i++) {
-				for (int j = 0; j < screen.get(i).size(); j++) {
-						out.add(new Pixel(screen.get(i).get(j), i+top, j+left, layer));
-				}
+			for (int j = 0; j < screen.get(i).size(); j++) {
+				//if (!fb.get(i).get(j).equals(screen.get(i).get(j))) 
+					out.add(new Pixel(fb.get(i).get(j), j+left, i+top, layer));
+			}
 		}
+
+		screen = fb;
+		fb = blankScreen();
+
 		return out.toArray(new Pixel[out.size()]);
 	}
 	
-	void refreshScreen() {
+	public void refreshScreen() {
+		refresh();
 		if (!inBuffer) toggleBuffer();
 		// Find each pixel in the fb that is different and update it
 		for (int i = 0; i < height; i++) {
@@ -121,6 +126,7 @@ public class Renderer implements RenderObject {
 
 	static boolean inBuffer = false;
 	static void toggleBuffer() {
+		// Switch to buffer
 		if (!inBuffer) {
 			// Save the cursor position
 			System.out.printf("\u001B7");
@@ -131,6 +137,7 @@ public class Renderer implements RenderObject {
 			// Hide the cursor
 			System.out.printf("\u001B[?25l");
 		}
+		// Switch out of buffer
 		else {
 			// Switch back to the standard screen buffer
 			System.out.printf("\u001B[?47l");
