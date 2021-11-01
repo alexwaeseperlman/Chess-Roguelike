@@ -12,11 +12,17 @@ public class Renderer implements RenderObject {
 	// For example if the camera is placed at position 0,0
 	// pixels with negative coordinates shouldn't be visible
 	int width, height, left, top, layer;
+    int offsetX, offsetY;
 	ArrayList<ArrayList<Glyph>> screen, fb;
 
 	public Renderer(int width, int height) {
 		this(width, height, 0, 0);
 	}
+    public Renderer(int width, int height, int x, int y, int offsetX, int offsetY) {
+        this(width, height, x, y);
+        this.offsetX = offsetX;
+        this.offsetY = offsetY;
+    }
 
 	public Renderer(int width, int height, int x, int y) {
 		this.width = width;
@@ -62,9 +68,7 @@ public class Renderer implements RenderObject {
 		Collections.sort(pixels, new Comparator<Pixel>() {
 			@Override
 			public int compare(Pixel a, Pixel b) {
-				if (a.layer < b.layer) return -1;
-				else if (b.layer < a.layer) return 1;
-				return 0;
+                return a.layer - b.layer;
 			}
 		});
 
@@ -75,13 +79,11 @@ public class Renderer implements RenderObject {
 
 	@Override
 	public Pixel[] draw() {
-		// Ensure that pixels are only drawn to the alternate buffer
 		ArrayList<Pixel> out = new ArrayList<Pixel>();
 		refresh();
 		for (int i = 0; i < screen.size(); i++) {
 			for (int j = 0; j < screen.get(i).size(); j++) {
-				//if (!fb.get(i).get(j).equals(screen.get(i).get(j))) 
-					out.add(new Pixel(fb.get(i).get(j), j+left, i+top, layer));
+                out.add(new Pixel(fb.get(i).get(j), j+offsetX, i+offsetY, layer));
 			}
 		}
 

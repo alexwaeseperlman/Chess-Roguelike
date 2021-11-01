@@ -11,15 +11,26 @@ class Main {
 		//t.fg = Color.RED;
 		//t.layer = 1;
 
-		MainMenu menu = new MainMenu(40, 20);
+        Text p = new Text("0", 3, 3, 10);
+		Menu menu = new Menu(new String[]{"Play", "Saved games", "Instructions"}, 30, 9, 2, 10, new Menu.Listener() {
+            public void onSelect(int selection) {
+                p.content = Integer.toString(selection);
+            }
+        });
 		Renderer render = new Renderer(40, 20); 
+        render.objects.add(p);
 		render.objects.add(menu);
 		Input inputs = new Input(System.in);
 
 		inputs.addListener(new Input.Listener() {
 			@Override
 			public void keyPressed(char c) {
-				render.refresh();
+                if (c == 'k') {
+                    menu.up();
+                }
+                else if (c == 'j') menu.down();
+                if (c == 'y') menu.select();
+				render.refreshScreen();
 				if (c == '{') {
 					Renderer.close();
 					inputs.close();
