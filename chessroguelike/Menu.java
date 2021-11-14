@@ -1,4 +1,5 @@
-import TextRenderer.*;
+package chessroguelike;
+import chessroguelike.textRenderer.*;
 
 public class Menu extends Renderer {
     public static interface Listener {
@@ -6,7 +7,6 @@ public class Menu extends Renderer {
     }
 	Rect[] buttons;
     Text[] texts;
-	Text playText, savedText, instructionsText;
 	
 	int buttonWidth, buttonHeight;
     int x, y;
@@ -47,12 +47,12 @@ public class Menu extends Renderer {
         }
     }
     public void up() {
-        selection = (3 + selection - 1) % 3;
+        selection = (buttons.length + selection - 1) % buttons.length;
         update();
     }
 
     public void down() {
-        selection = (3 + selection + 1) % 3;
+        selection = (buttons.length + selection + 1) % buttons.length;
         update();
     }
 

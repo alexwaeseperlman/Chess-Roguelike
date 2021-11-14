@@ -1,4 +1,4 @@
-package TextRenderer;
+package chessroguelike.textRenderer;
 
 import java.util.ArrayList;
 
@@ -15,7 +15,7 @@ public class Rect implements RenderObject {
     this.layer = layer;
   }
 
-  public Pixel[] draw() {
+  public ArrayList<Pixel> draw() {
     ArrayList<Pixel> arr = new ArrayList<Pixel>();
     for (int i = 0; i <= width; i++) {
       arr.add(new Pixel(new Glyph('—', fg, bg), x+i, y, layer));
@@ -38,7 +38,7 @@ public class Rect implements RenderObject {
     arr.add(new Pixel(plus, x+width, y+height, layer));
     arr.add(new Pixel(plus, x+width, y, layer));
 
-    return arr.toArray(new Pixel[arr.size()]);
+    return arr;
   }
 
 }

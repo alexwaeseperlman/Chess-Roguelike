@@ -1,4 +1,4 @@
-package Inputs;
+package chessroguelike.inputs;
 
 import java.util.HashSet;
 import java.io.*;

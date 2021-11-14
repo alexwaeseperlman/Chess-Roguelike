@@ -1,4 +1,4 @@
-package TextRenderer;
+package chessroguelike.textRenderer;
 
 public class Color {
   public static final Color 

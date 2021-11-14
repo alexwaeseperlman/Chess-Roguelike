@@ -1,4 +1,4 @@
-package TextRenderer;
+package chessroguelike.textRenderer;
 
 import java.util.HashSet;
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class Renderer implements RenderObject {
 	}
 
 	@Override
-	public Pixel[] draw() {
+	public ArrayList<Pixel> draw() {
 		ArrayList<Pixel> out = new ArrayList<Pixel>();
 		refresh();
 		for (int i = 0; i < screen.size(); i++) {
@@ -90,7 +90,7 @@ public class Renderer implements RenderObject {
 		screen = fb;
 		fb = blankScreen();
 
-		return out.toArray(new Pixel[out.size()]);
+		return out;
 	}
 	
 	public void refreshScreen() {

@@ -1,4 +1,4 @@
-package TextRenderer;
+package chessroguelike.textRenderer;
 
 import java.util.ArrayList;
 
@@ -22,7 +22,7 @@ public class Line implements RenderObject {
     this.vertical_first = vertical_first;
   }
 
-  public Pixel[] draw() {
+  public ArrayList<Pixel> draw() {
     
     ArrayList<Pixel> arr = new ArrayList<Pixel>(); 
 
@@ -36,7 +36,7 @@ public class Line implements RenderObject {
       arr.add(new Pixel('+', x2, y1, layer));
     }
 
-    return arr.toArray(new Pixel[arr.size()]);
+    return arr;
   }
 
   public void draw_vertical(int x, int _y1, int _y2, int layer, ArrayList<Pixel> _arr){

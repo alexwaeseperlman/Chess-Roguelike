@@ -1,4 +1,4 @@
-package TextRenderer;
+package chessroguelike.textRenderer;
 import java.util.ArrayList;
 
 public class Text implements RenderObject {
@@ -21,7 +21,7 @@ public class Text implements RenderObject {
     public Text(String s, int x, int y, int width) {
         this(s, x, y, width, " ", 3, Color.WHITE, Color.BLACK);
     }
-    public Pixel[] draw() {
+    public ArrayList<Pixel> draw() {
         ArrayList<Pixel> out = new ArrayList<Pixel>();
 
         int cols = 0;
@@ -38,7 +38,7 @@ public class Text implements RenderObject {
                 cols++;
             }
         }
-        return out.toArray(new Pixel[out.size()]);
+        return out;
     }
 
 }
