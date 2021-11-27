@@ -56,9 +56,9 @@ public interface Move {
         Move.fromDifference(1, 2),
         Move.fromDifference(2, 1),
         Move.fromDifference(2, -1),
-        Move.fromDifference(-1, -2),
         Move.fromDifference(1, -2),
-        Move.fromDifference(-2, 1),
-        Move.fromDifference(-2, -1)
+        Move.fromDifference(-1, -2),
+        Move.fromDifference(-2, -1),
+        Move.fromDifference(-2, 1)
     };
 }

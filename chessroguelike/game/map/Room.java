@@ -11,12 +11,14 @@ public class Room extends Renderer {
         super(width+1, height+1);
         this.width = width;
         this.height = height;
+		pieces = new HashMap<Piece, Position>();
         objects.put(new Rect(width, height, 0), new Position(0, 0));
     }
 
     public void updatePiece(Piece p, Position pos) {
         pieces.put(p, pos);
         objects.put(p, pos);
+		refresh();
     }
 
     boolean inRoom(Piece p) {
@@ -27,6 +29,6 @@ public class Room extends Renderer {
 		return inRoom(p.x, p.y);
 	}
     boolean inRoom(int x, int y) {
-        return x < width && y < height;
+        return x>0 && y> 0 && x < width && y < height;
     }
 }
