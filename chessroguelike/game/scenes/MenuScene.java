@@ -2,12 +2,13 @@ package chessroguelike.game.scenes;
 
 import chessroguelike.game.Scene;
 import chessroguelike.Menu;
+import chessroguelike.textRenderer.*;
 
 public class MenuScene extends Scene {
     Menu menu;
     public MenuScene(int width, int height, Listener listener) {
         super(width, height, listener);
-		menu = new Menu(new String[]{"Play", "Saved games", "Instructions", "Exit Game"}, 30, 9, 2, 10, new Menu.Listener() {
+		menu = new Menu(new String[]{"Play", "Saved games", "Instructions", "Exit Game"}, 30, 9, new Menu.Listener() {
 			public void onSelect(int selection) {
 				// Scene 0 is the main menu, so add 1 to each scene
 				switch (selection) {
@@ -28,7 +29,7 @@ public class MenuScene extends Scene {
 			}
 		});
 
-        objects.add(menu);
+        objects.put(menu, new Position(0, 0));
     }
 
 	public void input(char c) {

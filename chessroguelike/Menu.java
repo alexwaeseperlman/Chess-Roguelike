@@ -16,8 +16,8 @@ public class Menu extends Renderer {
     Color selected = new Color(128, 128, 128);
     Listener l;
 
-	public Menu(String options[], int width, int height, int x, int y, Listener l) {
-		super(width, height, 0, 0, x, y);
+	public Menu(String options[], int width, int height, Listener l) {
+		super(width, height);
         this.l = l;
         buttons = new Rect[options.length];
         texts = new Text[options.length];
@@ -26,11 +26,11 @@ public class Menu extends Renderer {
 		buttonHeight = 1;
 
         for (int i = 0; i < options.length; i++) {
-            buttons[i] = new Rect(0, i*height/options.length, buttonWidth, buttonHeight, 0);
-            texts[i] = new Text(options[i], 3, i*height/options.length+1, buttonWidth, 1);
+            buttons[i] = new Rect(buttonWidth, buttonHeight, 0);
+            texts[i] = new Text(options[i], buttonWidth, 1);
 
-            this.objects.add(buttons[i]);
-            this.objects.add(texts[i]);
+            this.objects.put(buttons[i], new Position(0, i*height/options.length));
+            this.objects.put(texts[i], new Position(3, i*height/options.length+1));
         }
         update();
 	}

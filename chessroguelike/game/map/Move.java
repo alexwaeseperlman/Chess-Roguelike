@@ -12,33 +12,31 @@ import java.util.ArrayList;
 public interface Move {
     boolean allowed(Piece p, Room m);
     void apply(Piece p, Room m);
-    void revert(Piece p, Room m);
-    ArrayList<Pixel> visualize(Piece p);
+	Move inverse();
+    ArrayList<Pixel> visualize();
 
     public static Move fromDifference(int x, int y) {
         Move out = new Move() {
             @Override
             public boolean allowed(Piece p, Room m) {
-                return m.inRoom(p.x + x, p.y + y);
+				if (!m.pieces.containsKey(p)) return false;
+				Position pos = m.pieces.get(p);
+                return m.inRoom(pos.x + x, pos.y + y);
             }
             @Override
             public void apply(Piece p, Room m) {
                 if (allowed(p, m)) {
-                    p.x += x;
-                    p.y += y;
-                }
-            }
-            @Override
-            public void revert(Piece p, Room m) {
-                if (m.inRoom(p.x - x, p.y - y)) {
-                    p.x -= x;
-                    p.y -= y;
+					m.updatePiece(p, m.pieces.get(p).add(x, y));
                 }
             }
 
+			@Override public Move inverse() {
+				return Move.fromDifference(-x, -y);
+			}
+
             @Override
-            public ArrayList<Pixel> visualize(Piece p) {
-                Line l = new Line(p.x, p.y, p.x+x, p.y+y, 1);
+            public ArrayList<Pixel> visualize() {
+                Line l = new Line(x, y, 1);
                 return l.draw();
             }
         };

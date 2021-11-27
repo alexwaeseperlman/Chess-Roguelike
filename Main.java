@@ -19,6 +19,7 @@ class Main {
 			@Override
 			public void move(Scene s) {
 				activeScene = s;
+				activeScene.hardRefresh();
 			}
 			
 		});

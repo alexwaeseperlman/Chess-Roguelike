@@ -3,13 +3,11 @@ package chessroguelike.textRenderer;
 import java.util.ArrayList;
 
 public class Rect implements RenderObject {
-  public int x, y, width, height, layer;
+  public int width, height, layer;
 
   public Color bg = Color.BLACK, fg = Color.WHITE;
 
-  public Rect(int x, int y, int width, int height, int layer) {
-    this.x = x;
-    this.y = y;
+  public Rect(int width, int height, int layer) {
     this.width = width;
     this.height = height;
     this.layer = layer;
@@ -17,26 +15,26 @@ public class Rect implements RenderObject {
 
   public ArrayList<Pixel> draw() {
     ArrayList<Pixel> arr = new ArrayList<Pixel>();
-    for (int i = 0; i <= width; i++) {
-      arr.add(new Pixel(new Glyph('—', fg, bg), x+i, y, layer));
-      arr.add(new Pixel(new Glyph('—', fg, bg), x+i, y+height, layer));
-    }
-
-    for (int i = 0; i <= height; i++) {
-      arr.add(new Pixel(new Glyph('│', fg, bg), x, y+i, layer));
-      arr.add(new Pixel(new Glyph('│', fg, bg), x+width, y+i, layer));
-    }
-
     for (int i = 1; i < height; i++) {
       for (int j = 1; j < width; j++) {
-        arr.add(new Pixel(new Glyph(' ', fg, bg), x+j, y+i, layer-1));
+        arr.add(new Pixel(new Glyph('.', fg, bg), j, i, layer-1));
       }
     }
+
+    for (int i = 0; i <= width; i++) {
+      arr.add(new Pixel(new Glyph('—', fg, bg), i, 0, layer));
+      arr.add(new Pixel(new Glyph('—', fg, bg), i, height, layer));
+    }
+    for (int i = 0; i <= height; i++) {
+      arr.add(new Pixel(new Glyph('│', fg, bg), 0, i, layer));
+      arr.add(new Pixel(new Glyph('│', fg, bg), width, i, layer));
+    }
+
     Glyph plus = new Glyph('+', fg, bg);
-    arr.add(new Pixel(plus, x, y, layer));
-    arr.add(new Pixel(plus, x, y+height, layer));
-    arr.add(new Pixel(plus, x+width, y+height, layer));
-    arr.add(new Pixel(plus, x+width, y, layer));
+    arr.add(new Pixel(plus, 0, 0, layer));
+    arr.add(new Pixel(plus, 0, height, layer));
+    arr.add(new Pixel(plus, width, height, layer));
+    arr.add(new Pixel(plus, width, 0, layer));
 
     return arr;
   }

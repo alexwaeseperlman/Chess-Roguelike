@@ -3,20 +3,17 @@ package chessroguelike.textRenderer;
 import java.util.ArrayList;
 
 public class Line implements RenderObject {
-  public int x1, y1, x2, y2;
-  int _x1, _y1, _x2, _y2;
+  public int x, y;
   int layer;
   boolean vertical_first;
 
-  public Line(int x1, int y1, int x2, int y2, int layer){
-    this(x1, y1, x2, y2, layer, true);
+  public Line(int x2, int y2, int layer){
+    this(x2, y2, layer, true);
   }
 
-  public Line(int x1, int y1, int x2, int y2, int layer, boolean vertical_first) {
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
+  public Line(int x, int y, int layer, boolean vertical_first) {
+    this.x = x;
+    this.y = y;
 
     this.layer = layer;
     this.vertical_first = vertical_first;
@@ -27,13 +24,13 @@ public class Line implements RenderObject {
     ArrayList<Pixel> arr = new ArrayList<Pixel>(); 
 
     if (vertical_first){
-      draw_vertical(x1, y1, y2, layer, arr);
-      draw_horizontal(x1, x2, y2, layer, arr);
-      arr.add(new Pixel('+', x1, y2, layer));
+      draw_vertical(0, 0, y, layer, arr);
+      draw_horizontal(0, x, y, layer, arr);
+      arr.add(new Pixel('+', 0, y, layer));
     } else{
-      draw_horizontal(x1, x2, y1, layer, arr);
-      draw_vertical(x2, y1, y2, layer, arr);
-      arr.add(new Pixel('+', x2, y1, layer));
+      draw_horizontal(0, x, 0, layer, arr);
+      draw_vertical(x, 0, y, layer, arr);
+      arr.add(new Pixel('+', x, 0, layer));
     }
 
     return arr;

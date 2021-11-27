@@ -5,8 +5,6 @@ import java.util.ArrayList;
 
 abstract class Piece implements RenderObject {
     // Global positions
-    int x, y;
-
     boolean visualizingMove = false;
     int selectedMove = 0;
     Move[] allowedMoves;
@@ -17,7 +15,7 @@ abstract class Piece implements RenderObject {
     @Override
     public ArrayList<Pixel> draw() {
         ArrayList<Pixel> p = drawPiece();
-        if (visualizingMove) p.addAll(allowedMoves[selectedMove].visualize(this));
+        if (visualizingMove) p.addAll(allowedMoves[selectedMove].visualize());
         return p;
     
     }

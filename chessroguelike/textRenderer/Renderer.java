@@ -1,42 +1,33 @@
 package chessroguelike.textRenderer;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+/**
+ *	Manages the rendering of pixels to the screen
+ * */
 public class Renderer implements RenderObject {
-	public HashSet<RenderObject> objects = new HashSet<RenderObject>();
+	public HashMap<RenderObject, Position> objects = new HashMap<RenderObject, Position>();
 
 	// Defines the viewport in global coordinates
 	// For example if the camera is placed at position 0,0
 	// pixels with negative coordinates shouldn't be visible
-	int width, height, left, top, layer;
-    int offsetX, offsetY;
+	int width, height, layer;
 	ArrayList<ArrayList<Glyph>> screen, fb;
 
 	public Renderer(int width, int height) {
-		this(width, height, 0, 0);
-	}
-    public Renderer(int width, int height, int x, int y, int offsetX, int offsetY) {
-        this(width, height, x, y);
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-    }
-
-	public Renderer(int width, int height, int x, int y) {
 		this.width = width;
 		this.height = height;
-		this.left = x;
-		this.top = y;
 		this.layer = 0;
 
 		screen = blankScreen();
 		fb = blankScreen();
 	}
 
-	public Renderer(int width, int height, int x, int y, int layer) {
-		this(width, height, x, y);
+	public Renderer(int width, int height, int layer) {
+		this(width, height);
 		this.layer = layer;
 	}
 
@@ -55,10 +46,10 @@ public class Renderer implements RenderObject {
 
 	public void refresh() {
 		ArrayList<Pixel> pixels = new ArrayList<Pixel>();
-		for (RenderObject obj : objects) {
+		for (RenderObject obj : objects.keySet()) {
 			for (Pixel p : obj.draw()) {
-				p.x -= left;
-				p.y -= top;
+				p.x += objects.get(obj).x;
+				p.y += objects.get(obj).y;
 				if (p.x < width && p.x >= 0 && p.y < height && p.y >= 0) {
 						pixels.add(p);
 				}
@@ -83,7 +74,7 @@ public class Renderer implements RenderObject {
 		refresh();
 		for (int i = 0; i < screen.size(); i++) {
 			for (int j = 0; j < screen.get(i).size(); j++) {
-                out.add(new Pixel(fb.get(i).get(j), j+offsetX, i+offsetY, layer));
+                out.add(new Pixel(fb.get(i).get(j), j, i, layer));
 			}
 		}
 
@@ -91,6 +82,15 @@ public class Renderer implements RenderObject {
 		fb = blankScreen();
 
 		return out;
+	}
+
+	public void hardRefresh() {
+		fb = blankScreen();
+		refresh();
+		if (!inBuffer) toggleBuffer();
+		// Clear the screen
+		System.out.printf("\033[2J");
+		refreshScreen();
 	}
 	
 	public void refreshScreen() {
