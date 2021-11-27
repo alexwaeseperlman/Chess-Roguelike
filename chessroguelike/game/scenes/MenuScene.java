@@ -29,13 +29,14 @@ public class MenuScene extends Scene {
 			}
 		});
 
-        objects.put(menu, new Position(0, 0));
+        objects.put(menu, new Position(2, 2));
     }
 
 	public void input(char c) {
 		if (c == 'k') menu.up();
 		else if (c == 'j') menu.down();
-		else if (c == 'y') menu.select();
+		// 13 is return
+		else if (c == 'y' || c == 13) menu.select();
 		refreshScreen();
 	}
 }

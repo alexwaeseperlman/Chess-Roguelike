@@ -9,7 +9,7 @@ class Main {
 	public static void main(String[] args) {
 		Input inputs = new Input(System.in);
 
-		activeScene = new MenuScene(40, 20, new Scene.Listener() {
+		activeScene = new MenuScene(60, 40, new Scene.Listener() {
 			@Override
 			public void exit() {
 				inputs.close();
