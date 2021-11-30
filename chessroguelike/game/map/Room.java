@@ -1,12 +1,14 @@
 package chessroguelike.game.map;
 
 import chessroguelike.textRenderer.*;
+import chessroguelike.game.map.pieces.*;
 import java.util.HashMap;
+import java.util.Random;
 
 public class Room extends Renderer {
     final int height, width;
 	// Stores the location of every piece int the room
-    HashMap<Piece, Position> pieces;
+    public HashMap<Piece, Position> pieces;
 
     public Room(int width, int height) {
 		// Initialize the renderer to be a bit larger than the room so we render its borders
@@ -22,18 +24,49 @@ public class Room extends Renderer {
 
 	/**
 	 * Update the position of a piece. This handles updating the render object and the piece position map
+     * @return Did was a piece taken
 	 * */
-    public void updatePiece(Piece p, Position pos) {
+    public Piece updatePiece(Piece p, Position pos) {
+        Piece target = atPosition(pos);
+        if (!inRoom(pos)) return null;
         pieces.put(p, pos);
         objects.put(p, pos);
 		refresh();
+        if (target != null) {
+            killPiece(target);
+            return target;
+        }
+        return null;
+    }
+
+    void killPiece(Piece p) {
+        // TODO: Handle player death
+        pieces.remove(p);
+        objects.remove(p);
     }
 
 	/**
 	 *	Test if a piece exists in a room, and if its position is correct
 	 * */
     boolean inRoom(Piece p) {
-        return pieces.containsKey(p) && inRoom(pieces.get(p)) && p.alive();
+        return pieces.containsKey(p) && inRoom(pieces.get(p));
+    }
+
+    /**
+     * Test if a position is filled by another piece
+     * */
+    Piece atPosition(Position p) {
+        for (Piece x : pieces.keySet()) {
+            if (pieces.get(x).equals(p)) return x;
+        }
+        return null;
+    }
+
+    /**
+     * Test if a position is filled by another piece
+     * */
+    boolean filledPosition(Position p) {
+        return atPosition(p) != null;
     }
 
 	/**
@@ -47,5 +80,24 @@ public class Room extends Renderer {
 	 * */
     boolean inRoom(int x, int y) {
         return x>0 && y> 0 && x < width && y < height;
+    }
+
+    public static Room generate(int w, int h, int difficulty, Piece player, Position playerPos) {
+        Room room = new Room(w, h);
+        room.updatePiece(player, playerPos);
+
+
+        Random rand = new Random();
+        for (int i = 0; i < difficulty; i++) {
+            Position p;
+            int guesses = 0;
+            do {
+                p = new Position(rand.nextInt(w), rand.nextInt(h));
+                guesses++;
+            } while ((room.filledPosition(p) || !room.inRoom(p)) && guesses < 100 /* give up */);
+            if (!room.filledPosition(p)) room.updatePiece(new Pawn(), p);
+        }
+
+        return room;
     }
 }

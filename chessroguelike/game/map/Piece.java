@@ -8,14 +8,10 @@ import java.util.ArrayList;
  * It stores the list of moves that the piece is allowed to make and a way to draw the piece, including visualizing moves
  * */
 abstract public class Piece implements RenderObject {
-    public boolean visualizingMove = false;
+    public boolean visualizingMove = false, attacking = false;
     public int selectedMove = 0;
     public Move[] moves;
 
-	/**
-	 * Test whether or not this piece is alive
-	 * */
-    public abstract boolean alive();
 	/**
 	 * Get a list of pixels representing what this piece should look like.
 	 * */
@@ -32,8 +28,7 @@ abstract public class Piece implements RenderObject {
     @Override
     public ArrayList<Pixel> draw() {
         ArrayList<Pixel> p = drawPiece();
-        if (visualizingMove && selectedMove >= 0 && selectedMove < moves.length) p.addAll(moves[selectedMove].visualize());
+        if (visualizingMove && selectedMove >= 0 && selectedMove < moves.length) p.addAll(moves[selectedMove].visualize(attacking));
         return p;
-    
     }
 }

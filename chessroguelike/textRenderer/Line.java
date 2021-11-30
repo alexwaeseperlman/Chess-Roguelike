@@ -3,58 +3,49 @@ package chessroguelike.textRenderer;
 import java.util.ArrayList;
 
 public class Line implements RenderObject {
-  public int x, y;
-  int layer;
-  boolean vertical_first;
-
-  public Line(int x2, int y2, int layer){
-    this(x2, y2, layer, true);
-  }
-
-  public Line(int x, int y, int layer, boolean vertical_first) {
-    this.x = x;
-    this.y = y;
-
-    this.layer = layer;
-    this.vertical_first = vertical_first;
-  }
-
-  public ArrayList<Pixel> draw() {
+    public int x, y;
+    public int layer;
+    public Color fg, bg;
     
-    ArrayList<Pixel> arr = new ArrayList<Pixel>(); 
-
-    if (vertical_first){
-      draw_vertical(0, 0, y, layer, arr);
-      draw_horizontal(0, x, y, layer, arr);
-      arr.add(new Pixel('+', 0, y, layer));
-    } else{
-      draw_horizontal(0, x, 0, layer, arr);
-      draw_vertical(x, 0, y, layer, arr);
-      arr.add(new Pixel('+', x, 0, layer));
+    public Line(int x, int y, int layer){
+        this(x, y, layer, Color.WHITE, Color.BLACK);
     }
-
-    return arr;
-  }
-
-  public void draw_vertical(int x, int _y1, int _y2, int layer, ArrayList<Pixel> _arr){
-    if (_y1 > _y2){
-      int new_y1 = _y2;
-      _y2 = _y1;
-      _y1 = new_y1;
+    
+    public Line(int x, int y, int layer, Color fg, Color bg) {
+        this.x = x;
+        this.y = y;
+        this.layer = layer;
+        this.fg = fg;
+        this.bg = bg;
     }
-    for (int i=0; i<_y2 -_y1; i++){
-      _arr.add(new Pixel('|', x, _y1+i, layer));
+    
+    @Override
+    public ArrayList<Pixel> draw() {
+        ArrayList<Pixel> arr = new ArrayList<Pixel>();
+        
+        int startX = Math.min(0, x), endX = Math.max(0, x),
+        startY = Math.min(0, y), endY = Math.max(0, y);
+        
+        int vertX = 0, horizY = y;
+        
+        // Draw the long side first, so if width is greater than height we draw the vertical line at endX
+        if (endX-startX > endY-startY) {
+            vertX = x;
+            horizY = 0;
+        }
+        
+        for (int i = startX+1; i < endX; i++) {
+            arr.add(new Pixel(new Glyph('─', fg, bg), i, horizY, layer));
+        }
+        
+        for (int i = startY+1; i < endY; i++) {
+            arr.add(new Pixel(new Glyph('│', fg, bg), vertX, i, layer));
+        }
+        
+        arr.add(new Pixel(new Glyph('+', fg, bg), vertX, horizY, layer));
+        arr.add(new Pixel(new Glyph('x', fg, bg), 0, 0, layer));
+        arr.add(new Pixel(new Glyph('x', fg, bg), x, y, layer));
+    
+        return arr;
     }
-  }
-
-  public void draw_horizontal(int _x1, int _x2, int y, int layer, ArrayList<Pixel> _arr){
-    if (_x1 > _x2){
-      int new_x1 = _x2;
-      _x2 = _x1;
-      _x1 = new_x1;
-    }
-    for (int i=0; i<=_x2 -_x1; i++){
-      _arr.add(new Pixel('-', _x1+i, y, layer));
-    }
-  }
 }

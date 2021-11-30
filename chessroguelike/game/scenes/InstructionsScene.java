@@ -11,6 +11,5 @@ class InstructionsScene extends Scene {
 
 	public void input(char c) {
 		refreshScreen();
-
 	}
 }

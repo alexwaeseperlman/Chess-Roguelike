@@ -17,4 +17,8 @@ public class Position {
 	public Position add(int x, int y) {
 		return add(new Position(x, y));
 	}
+
+    public boolean equals(Position p) {
+        return x == p.x && y == p.y;
+    }
 }

@@ -8,14 +8,13 @@ public abstract class Scene extends Renderer {
         public void exit();
         public void move(Scene s);
     }
-	Listener listener;
+	protected Listener listener;
 
     // Called when user types a character
     public abstract void input(char c);
 
 	public Scene(int width, int height, Listener listener) {
 		super(width, height);
-
 		this.listener = listener;
 	}
 }

@@ -11,9 +11,12 @@ import java.util.ArrayList;
 // visualize() returns a list of Pixel objects representing what this move would look like
 public interface Move {
     boolean allowed(Piece p, Room m);
-    void apply(Piece p, Room m);
+    boolean wouldAttack(Piece p, Room m);
+    // Returns a piece that was taken (possibly null)
+    Piece apply(Piece p, Room m);
 	Move inverse();
-    ArrayList<Pixel> visualize();
+
+    ArrayList<Pixel> visualize(boolean attack);
 
     public static Move fromDifference(int x, int y) {
         Move out = new Move() {
@@ -24,10 +27,17 @@ public interface Move {
                 return m.inRoom(pos.x + x, pos.y + y);
             }
             @Override
-            public void apply(Piece p, Room m) {
+            public boolean wouldAttack(Piece p, Room m) {
+				if (!m.pieces.containsKey(p)) return false;
+                return m.filledPosition(m.pieces.get(p).add(x, y));
+
+            }
+            @Override
+            public Piece apply(Piece p, Room m) {
                 if (allowed(p, m)) {
-					m.updatePiece(p, m.pieces.get(p).add(x, y));
+					return m.updatePiece(p, m.pieces.get(p).add(x, y));
                 }
+                return null;
             }
 
 			@Override public Move inverse() {
@@ -35,8 +45,9 @@ public interface Move {
 			}
 
             @Override
-            public ArrayList<Pixel> visualize() {
+            public ArrayList<Pixel> visualize(boolean attack) {
                 Line l = new Line(x, y, 1);
+                if (attack) l.fg = new Color(255, 0, 0);
                 return l.draw();
             }
         };

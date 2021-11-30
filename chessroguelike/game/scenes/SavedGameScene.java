@@ -11,6 +11,5 @@ class SavedGameScene extends Scene {
 
 	public void input(char c) {
 		refreshScreen();
-
 	}
 }

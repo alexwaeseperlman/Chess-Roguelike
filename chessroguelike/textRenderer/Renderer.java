@@ -14,7 +14,7 @@ public class Renderer implements RenderObject {
 	// Defines the viewport in global coordinates
 	// For example if the camera is placed at position 0,0
 	// pixels with negative coordinates shouldn't be visible
-	int width, height, layer;
+	protected int width, height, layer;
 	ArrayList<ArrayList<Glyph>> screen, fb;
 
 	public Renderer(int width, int height) {
