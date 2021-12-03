@@ -65,8 +65,12 @@ class GameScene extends Scene {
             // Go to you win screen
             win();
         }
-
-		refreshScreen();
+        else if (room.pieces.size() == 1 && room.pieces.containsKey(player)) {
+            // Go to you win screen
+            win();
+        }
+        // Don't call refresh screen after a scene transition
+		else refreshScreen();
 	}
     void lose() {
         listener.move(new MenuScene(width, height, listener));

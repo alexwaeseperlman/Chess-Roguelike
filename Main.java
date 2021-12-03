@@ -17,7 +17,7 @@ class Main {
         }
 		Input inputs = new Input(System.in);
 
-		activeScene = new MenuScene(60, 40, new Scene.Listener() {
+		activeScene = new MenuScene(50, 15, new Scene.Listener() {
 			@Override
 			public void exit() {
 				inputs.close();
@@ -29,19 +29,17 @@ class Main {
 				activeScene = s;
 				activeScene.hardRefresh();
 			}
-			
 		});
 
 		inputs.addListener(new Input.Listener() {
 			@Override
 			public void keyPressed(char c) {
 				activeScene.input(c);
-
 			}
 		});
 		inputs.open();
 
-		activeScene.refreshScreen();
+		activeScene.hardRefresh();
 	}
 	public static void wait(int ms) {
 		try {

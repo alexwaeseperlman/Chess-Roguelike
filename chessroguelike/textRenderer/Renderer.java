@@ -31,13 +31,20 @@ public class Renderer implements RenderObject {
 		this.layer = layer;
 	}
 
+
 	ArrayList<ArrayList<Glyph>> blankScreen() {
+        return blankScreen(' ');
+    }
+    /**
+     * Outputs a blank 2d char array filled with `c`
+     */
+	ArrayList<ArrayList<Glyph>> blankScreen(char c) {
 		ArrayList<ArrayList<Glyph>> out = new ArrayList<ArrayList<Glyph>>();
 		
 		for (int i = 0; i < height; i++) {
 			out.add(new ArrayList<Glyph>());
 			for (int j = 0; j < width; j++) {
-				out.get(i).add(new Glyph(' '));
+				out.get(i).add(new Glyph(c));
 			}
 		}
 
@@ -84,12 +91,17 @@ public class Renderer implements RenderObject {
 		return out;
 	}
 
+    /**
+     * Clear the screen buffer and then render to it.
+     * Calls {@link #refreshScreen()} after clearing
+     **/
 	public void hardRefresh() {
-		fb = blankScreen();
-		refresh();
-		if (!inBuffer) toggleBuffer();
 		// Clear the screen
-		System.out.printf("\033[2J");
+		System.out.printf("\u001B[2J");
+
+        // Use an uncommon character for the screen buffer so everything gets drawn
+		screen = blankScreen('~');
+        fb = blankScreen(' ');
 		refreshScreen();
 	}
 	
