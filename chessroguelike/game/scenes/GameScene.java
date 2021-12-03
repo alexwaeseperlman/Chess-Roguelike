@@ -61,10 +61,6 @@ class GameScene extends Scene {
             // Go to you lose screen
             lose();
         }
-        if (room.pieces.size() == 1 && room.pieces.containsKey(player)) {
-            // Go to you win screen
-            win();
-        }
         else if (room.pieces.size() == 1 && room.pieces.containsKey(player)) {
             // Go to you win screen
             win();
