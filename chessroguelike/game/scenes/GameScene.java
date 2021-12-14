@@ -12,11 +12,19 @@ class GameScene extends Scene {
 	Piece player;
     Engine eng;
 
+    public String piece_name;
+
 	Text t;
-    GameScene(int width, int height, Listener listener) {
+    GameScene(int width, int height, Listener listener){
+        this(width, height, listener, Move.randomPiece());
+    }
+
+    GameScene(int width, int height, Listener listener, String piece_name) {
         super(width, height, listener);
 
-		t = new Text("Use 'l' and 'h' to cycle between moves. Press m to make your selected move. Press escape to leave move select mode", 25);
+        this.piece_name = piece_name;
+
+		t = new Text("Use 'l' and 'h' to cycle between moves. Press m to make your selected move. Press escape to leave move select mode\n" + "You are currently playing as: " + piece_name, 25);
 
 		player = new Piece() {
 			@Override
@@ -29,7 +37,7 @@ class GameScene extends Scene {
 		room = Room.generate(20, 10, 3, player, new Position(3, 3));
         eng = new Engine(room);
 		player.visualizingMove = true;
-		player.moves = Move.knight;
+		player.moves = Move.pieces.get(piece_name);
 
 		objects.put(room, new Position(1, 1));
 		objects.put(t, new Position(25, 1));
@@ -72,9 +80,9 @@ class GameScene extends Scene {
 		else refreshScreen();
 	}
     void lose() {
-        listener.move(new MenuScene(width, height, listener));
+        listener.move(new DeathScene(width, height, listener));
     }
     void win() {
-        listener.move(new MenuScene(width, height, listener));
+        listener.move(new TransitionScene(width, height, listener));
     }
 }
