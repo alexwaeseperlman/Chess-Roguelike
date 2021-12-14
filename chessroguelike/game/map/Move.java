@@ -2,6 +2,11 @@ package chessroguelike.game.map;
 import chessroguelike.textRenderer.*;
 import java.util.ArrayList;
 
+import java.util.HashMap;
+
+import java.util.Random;
+
+
 // Moves only affect the piece that they are applied to.
 // They can be reverted
 // apply() moves the piece according to the move, and revert() moves the piece back
@@ -72,4 +77,20 @@ public interface Move {
         Move.fromDifference(-2, -1),
         Move.fromDifference(-2, 1)
     };
+
+    public static HashMap<String, Move[]> pieces = new HashMap<String, Move[]>(){
+    {
+        put("Knight", knight);
+        put("Pawn", pawn);
+    }
+    };
+
+    public static Object[] piece_names = pieces.keySet().toArray();
+
+    Random generator = new Random();
+
+    public static String randomPiece(){
+        System.out.println(piece_names[generator.nextInt(piece_names.length)]);
+        return (String) piece_names[generator.nextInt(piece_names.length)];
+    }
 }
