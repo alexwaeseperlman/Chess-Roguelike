@@ -51,7 +51,11 @@ class GameScene extends Scene {
             if (allowed) {
                 Piece target = player.moves[player.selectedMove].apply(player, room);
                 // Only move ai if player didn't take a piece
-                if (target == null) eng.makeMoves(player);
+                if (target == null) {
+                    eng.start();
+                    eng.join();
+                    eng.makeMoves(player);
+                }
             }
         }
         player.attacking = player.moves[player.selectedMove].wouldAttack(player, room);
