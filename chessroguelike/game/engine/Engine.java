@@ -6,17 +6,44 @@ import java.util.HashMap;
 import java.util.Random;
 import java.util.ArrayList;
 
-public class Engine {
+public class Engine implements Runnable {
     Room room;
+    private Thread t;
+
+    private boolean running = false;
 
     public Engine(Room room) {
         this.room = room;
     }
 
+    public synchronized boolean calculating() {
+        return running;
+    }
+
+    public synchronized void join() {
+        try {
+            if (running) t.join();
+        }
+        catch (InterruptedException e) {
+            // do nothing
+        }
+    }
+
+    public synchronized void start() {
+        running = true;
+        t = new Thread(this);
+        t.start();
+    }
+
+    @Override
+    public void run() {
+        running = false;
+    }
+
     /**
      * Make the best moves for the given pieces
      * */
-    public void makeMoves(Piece player) {
+    public synchronized void makeMoves(Piece player) {
         // Make moves for the given pieces
 
         // Just do it randomly
