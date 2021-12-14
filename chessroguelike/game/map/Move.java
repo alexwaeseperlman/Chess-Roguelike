@@ -2,6 +2,10 @@ package chessroguelike.game.map;
 import chessroguelike.textRenderer.*;
 import java.util.ArrayList;
 
+/**
+ * A move is an object that can apply movement to a {@link:Piece}
+ * Moves can only affect one piece at a time
+ **/
 // Moves only affect the piece that they are applied to.
 // They can be reverted
 // apply() moves the piece according to the move, and revert() moves the piece back
@@ -10,14 +14,30 @@ import java.util.ArrayList;
 
 // visualize() returns a list of Pixel objects representing what this move would look like
 public interface Move {
+    /**
+     * Test whether or not it's possible to apply this move
+     * @param p The {@link Piece} that the move should be applied to 
+     * @param m The {@link Room} that the piece is in
+     **/
     boolean allowed(Piece p, Room m);
     boolean wouldAttack(Piece p, Room m);
     // Returns a piece that was taken (possibly null)
     Piece apply(Piece p, Room m);
 	Move inverse();
 
+    /**
+     * Generate a list of pixels that visualize this move
+     * @param attack Sets whether or not the visualized move is an attack.
+                     This usually just means to use a different color.
+     **/
     ArrayList<Pixel> visualize(boolean attack);
 
+    /**
+     * Generate a move based on the difference in position it creates
+     * All the normal chess moves can be implemented with this
+     * @param The applied difference on the x-axis
+     * @param The applied difference on the y-axis
+     **/
     public static Move fromDifference(int x, int y) {
         Move out = new Move() {
             @Override
@@ -40,7 +60,8 @@ public interface Move {
                 return null;
             }
 
-			@Override public Move inverse() {
+			@Override 
+            public Move inverse() {
 				return Move.fromDifference(-x, -y);
 			}
 

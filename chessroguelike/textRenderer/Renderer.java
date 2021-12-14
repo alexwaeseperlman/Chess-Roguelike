@@ -7,7 +7,7 @@ import java.util.Comparator;
 
 /**
  *	Manages the rendering of pixels to the screen
- * */
+ **/
 public class Renderer implements RenderObject {
 	public HashMap<RenderObject, Position> objects = new HashMap<RenderObject, Position>();
 
@@ -15,8 +15,18 @@ public class Renderer implements RenderObject {
 	// For example if the camera is placed at position 0,0
 	// pixels with negative coordinates shouldn't be visible
 	protected int width, height, layer;
+
+    // The renderer object has two buffers (terminology from opengl):
+    // The screen and fb (framebuffer)
+    // The screen buffer stores what information is currently on the screen
+    // The frame buffer stores pixels as they are rendered, before they go to the screen
+    // This is important because it lets us avoid writing characters unnecessarily
+    // which means that the game can actually be somewhat playable with an online terminal like repl.it
 	ArrayList<ArrayList<Glyph>> screen, fb;
 
+    /**
+     * Construct a renderer with the given width/height
+     **/
 	public Renderer(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -32,6 +42,9 @@ public class Renderer implements RenderObject {
 	}
 
 
+    /**
+     * Call {@link #blankScreen()} with c=' '
+     **/
 	ArrayList<ArrayList<Glyph>> blankScreen() {
         return blankScreen(' ');
     }
@@ -51,12 +64,19 @@ public class Renderer implements RenderObject {
 		return out;
 	}
 
+    /**
+     * Update the framebuffer for any changes to 
+     * {@linkRenderObject} objects in this renderer
+     **/
 	public void refresh() {
 		ArrayList<Pixel> pixels = new ArrayList<Pixel>();
+        // Draw each object
 		for (RenderObject obj : objects.keySet()) {
 			for (Pixel p : obj.draw()) {
+                // Shift pixels from object space into renderer space
 				p.x += objects.get(obj).x;
 				p.y += objects.get(obj).y;
+                // If the new pixel is in the screen of this renderer add it to a list to draw it
 				if (p.x < width && p.x >= 0 && p.y < height && p.y >= 0) {
 						pixels.add(p);
 				}
@@ -70,11 +90,18 @@ public class Renderer implements RenderObject {
 			}
 		});
 
+        // Draw pixels onto the framebuffer in order of their layer
 		for (Pixel p : pixels) {
 			if (!p.c.transparent) fb.get(p.y).set(p.x, p.c);
 		}
 	}
 
+    /**
+     * Refresh the framebuffer and then return the pixels
+     * This allows {@link Renderer} objects to be used as 
+     * {@link RenderObject}, which means that more complex
+     * things can be drawn.
+     **/
 	@Override
 	public ArrayList<Pixel> draw() {
 		ArrayList<Pixel> out = new ArrayList<Pixel>();
@@ -105,6 +132,9 @@ public class Renderer implements RenderObject {
 		refreshScreen();
 	}
 	
+    /**
+     * Update the framebuffer and then print all the new changes to the screen
+     **/
 	public void refreshScreen() {
 		refresh();
 		if (!inBuffer) toggleBuffer();
@@ -116,6 +146,7 @@ public class Renderer implements RenderObject {
 			
 			for (int j = 0; j < width; j++) {
 				Glyph g = fb.get(i).get(j);
+                // Only print characters if the fb differs from the screen at this position
 				if (!g.equals(screen.get(i).get(j))) {
 					if (!moved) {
 						moveCursor(j+1, i+1);
@@ -139,6 +170,9 @@ public class Renderer implements RenderObject {
 	}
 
 	static boolean inBuffer = false;
+    /**
+     * Toggle between alternate and main buffers
+     **/
 	static void toggleBuffer() {
 		// Switch to buffer
 		if (!inBuffer) {

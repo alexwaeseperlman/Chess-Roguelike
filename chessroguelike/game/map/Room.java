@@ -5,6 +5,9 @@ import chessroguelike.game.map.pieces.*;
 import java.util.HashMap;
 import java.util.Random;
 
+/**
+ * A class to render a store game state
+ **/
 public class Room extends Renderer {
     final int height, width;
 	// Stores the location of every piece int the room
@@ -24,7 +27,7 @@ public class Room extends Renderer {
 
 	/**
 	 * Update the position of a piece. This handles updating the render object and the piece position map
-     * @return Did was a piece taken
+     * @return Was a piece taken
 	 * */
     public Piece updatePiece(Piece p, Position pos) {
         Piece target = atPosition(pos);
@@ -82,6 +85,13 @@ public class Room extends Renderer {
         return x>0 && y> 0 && x < width && y < height;
     }
 
+    /**
+     * Randomly generate a room based on parameters
+     * @param difficulty Currently represents the number of
+     *                   pieces that are in the room
+     * @param player The {@link Piece} object that represents 
+                     the player
+     **/
     public static Room generate(int w, int h, int difficulty, Piece player, Position playerPos) {
         Room room = new Room(w, h);
         room.updatePiece(player, playerPos);
