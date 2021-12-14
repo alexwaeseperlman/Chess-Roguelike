@@ -73,9 +73,9 @@ class GameScene extends Scene {
 		else refreshScreen();
 	}
     void lose() {
-        listener.move(new MenuScene(width, height, listener));
+        listener.move(new DeathScene(width, height, listener));
     }
     void win() {
-        listener.move(new MenuScene(width, height, listener));
+        listener.move(new TransitionScene(width, height, listener));
     }
 }
