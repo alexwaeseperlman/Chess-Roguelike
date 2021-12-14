@@ -5,6 +5,8 @@ import chessroguelike.Menu;
 
 import chessroguelike.textRenderer.*;
 
+import chessroguelike.game.map.Move;
+
 class TransitionScene extends Scene{  
   Text t;
   Menu menu;
@@ -12,11 +14,13 @@ class TransitionScene extends Scene{
   TransitionScene(int width, int height, Listener listener){
     super(width, height, listener);
 
+    String piece_name = Move.randomPiece();
+
     menu = new Menu(new String[] {"Next level", "Main Menu", "Instructions", "Save Game", "Exit Game"}, 30, 11, new Menu.Listener(){
       public void onSelect(int selection){
         switch(selection){
           case 0:
-            listener.move(new GameScene(width, height, listener));
+            listener.move(new GameScene(width, height, listener, piece_name));
             break;
           case 1:
             listener.move(new InstructionsScene(width, height, listener));
@@ -36,10 +40,8 @@ class TransitionScene extends Scene{
       }
     });
 
-    /*
-    PLEASE MODIFY THIS TEXT AFTER THE PLAYER KNOWS WHAT MOVES IT IS PLAYING AS
-    */
-    t = new Text("Good Job completing a level! To save your progress, press 'Save Game'\n" + "You will be playing as: " + 
+    
+    t = new Text("Good Job completing a level! To save your progress, press 'Save Game'\n" + "You will be playing as: " + piece_name
     , 25);
 
     objects.put(menu, new Position(2, 2));

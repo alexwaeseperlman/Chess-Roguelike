@@ -35,7 +35,7 @@ class DeathScene extends Scene{
     t = new Text("YOU DIED, try harder next time \nPress 'k' and 'j' to cycle through options.", 25);
 
     objects.put(menu, new Position(2, 2));
-		objects.put(t, new Position(30, 2));  
+		objects.put(t, new Position(35, 2));  
   }
 
   public void input(char c) {
