@@ -67,6 +67,38 @@ public interface Move {
         Move.fromDifference(0, -1)
     };
 
+    public static Move[] rook = {
+      Move.fromDifference(0, 1),
+      Move.fromDifference(0, 2),
+      Move.fromDifference(0, 3),
+      Move.fromDifference(0, 4),
+      Move.fromDifference(0, 5),
+      Move.fromDifference(0, 6),
+      Move.fromDifference(0, 7),
+      Move.fromDifference(0, -1),
+      Move.fromDifference(0, -2),
+      Move.fromDifference(0, -3),
+      Move.fromDifference(0, -4),
+      Move.fromDifference(0, -5),
+      Move.fromDifference(0, -6),
+      Move.fromDifference(0, -7),
+
+      Move.fromDifference(1, 0),
+      Move.fromDifference(2, 0),
+      Move.fromDifference(3, 0),
+      Move.fromDifference(4, 0),
+      Move.fromDifference(5, 0),
+      Move.fromDifference(6, 0),
+      Move.fromDifference(7, 0),
+      Move.fromDifference(-1, 0),
+      Move.fromDifference(-2, 0),
+      Move.fromDifference(-3, 0),
+      Move.fromDifference(-4, 0),
+      Move.fromDifference(-5, 0),
+      Move.fromDifference(-6, 0),
+      Move.fromDifference(-7, 0)
+    };
+
     public static Move[] knight = {
         Move.fromDifference(-1, 2),
         Move.fromDifference(1, 2),
@@ -78,10 +110,13 @@ public interface Move {
         Move.fromDifference(-2, 1)
     };
 
+
+
     public static HashMap<String, Move[]> pieces = new HashMap<String, Move[]>(){
     {
         put("Knight", knight);
         put("Pawn", pawn);
+        put("Rook", rook);
     }
     };
 
