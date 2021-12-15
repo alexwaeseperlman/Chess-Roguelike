@@ -112,6 +112,9 @@ public interface Move {
 
 
 
+    /*
+    Hashmap for storing referecing the names with their moves
+    */
     public static HashMap<String, Move[]> pieces = new HashMap<String, Move[]>(){
     {
         put("Knight", knight);
@@ -119,11 +122,15 @@ public interface Move {
         put("Rook", rook);
     }
     };
-
+    
+    // get an array of keys
     public static Object[] piece_names = pieces.keySet().toArray();
 
     Random generator = new Random();
 
+    /*
+    Method for getting a valid name for pieces (to be used as index for getting moves within the GameScene)
+    */
     public static String randomPiece(){
         System.out.println(piece_names[generator.nextInt(piece_names.length)]);
         return (String) piece_names[generator.nextInt(piece_names.length)];
