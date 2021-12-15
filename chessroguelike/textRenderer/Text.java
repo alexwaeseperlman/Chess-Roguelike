@@ -24,18 +24,24 @@ public class Text implements RenderObject {
 
         int cols = 0;
         int row = 0;
-        for (String w : content.split(delimiter)) {
-            if (cols + w.length()+delimiter.length() > width) {
-                cols = 0;
-                row++;
-            }
+        for (String line : content.split("\n")){
+            for (String w : line.split(delimiter)) {
+                if (cols + w.length() + delimiter.length() > width) {
+                    cols = 0;
+                    row++;
+                }
 
-            for (int i = 0; i < (delimiter+w).length(); i++) {
-                Glyph c = new Glyph((delimiter+w).charAt(i), fg, bg);
-                out.add(new Pixel(c, cols, row, layer));
-                cols++;
+                for (int i = 0; i < (delimiter+w).length(); i++) {
+                    
+                    Glyph c = new Glyph((w + delimiter).charAt(i), fg, bg);
+                    out.add(new Pixel(c, cols, row, layer));
+                    cols++;
+                }
             }
+            cols = 0;
+            row ++;
         }
+        
         return out;
     }
 
