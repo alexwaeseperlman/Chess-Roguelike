@@ -1,6 +1,7 @@
 package chessroguelike.game.scenes;
 
 import chessroguelike.game.Scene;
+import chessroguelike.game.PlayerStats;
 import chessroguelike.game.map.*;
 import chessroguelike.Menu;
 import chessroguelike.textRenderer.*;
@@ -12,19 +13,23 @@ class GameScene extends Scene {
 	Piece player;
     Engine eng;
 
+    int enemies;
+    PlayerStats stats;
+
     public String piece_name;
 
 	Text t;
     GameScene(int width, int height, Listener listener){
-        this(width, height, listener, Move.randomPiece());
+        this(width, height, listener, Move.randomPiece(), new PlayerStats());
     }
 
-    GameScene(int width, int height, Listener listener, String piece_name) {
+    GameScene(int width, int height, Listener listener, String piece_name, PlayerStats stats) {
         super(width, height, listener);
 
         this.piece_name = piece_name;
+        this.stats = stats;
 
-		t = new Text("Use 'l' and 'h' to cycle between moves. Press m to make your selected move. Press escape to leave move select mode\n" + "You are currently playing as: " + piece_name, 25);
+		t = new Text("Use 'l' and 'h' to cycle between moves. \nPress m to make your selected move. \nPress escape to leave move select mode." + "\n\nCurrently playing as: " + piece_name, 25);
 
 		player = new Piece() {
 			@Override
@@ -34,7 +39,12 @@ class GameScene extends Scene {
 				return out;
 			}
 		};
-		room = Room.generate(20, 10, 3, player, new Position(3, 3));
+
+        // generates random number of enemies between 3 an 5 (inclusive)
+        enemies = 3 + (int) (Math.random() * 3);
+
+		room = Room.generate(20, 10, enemies, player, new Position(3, 3));
+        
         eng = new Engine(room);
 		player.visualizingMove = true;
 		player.moves = Move.pieces.get(piece_name);
@@ -53,6 +63,10 @@ class GameScene extends Scene {
 			player.visualizingMove = true;
 		}
 		if (c == '\u001B') player.visualizingMove = false;
+
+        if (c == 'w'){
+            win();
+        }
 
 		if (c == 'm' || c == 13) {
             boolean allowed = player.moves[player.selectedMove].allowed(player, room);
@@ -81,9 +95,12 @@ class GameScene extends Scene {
 		else refreshScreen();
 	}
     void lose() {
-        listener.move(new DeathScene(width, height, listener));
+        listener.move(new DeathScene(width, height, listener, stats));
     }
     void win() {
-        listener.move(new TransitionScene(width, height, listener));
+        stats.enemies_killed += enemies;
+        stats.levels_completed ++;
+        stats.addPiece(piece_name);
+        listener.move(new TransitionScene(width, height, listener, stats));
     }
 }
