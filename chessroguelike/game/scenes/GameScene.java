@@ -75,7 +75,6 @@ class GameScene extends Scene {
                 // Only move ai if player didn't take a piece
                 if (target == null) {
                     eng.start();
-                    eng.join();
                     eng.makeMoves(player);
                 }
             }

@@ -2,6 +2,10 @@ package chessroguelike.game;
 
 import chessroguelike.textRenderer.*;
 
+/**
+ * The scene class is a {@link Renderer} that allows you
+ * to switch between scenes
+ **/
 public abstract class Scene extends Renderer {
     // Used to move between scenes or back to the main menu
     public static interface Listener {
@@ -13,6 +17,9 @@ public abstract class Scene extends Renderer {
     // Called when user types a character
     public abstract void input(char c);
 
+    /**
+     * Construct a scene object with given width and height
+     **/
 	public Scene(int width, int height, Listener listener) {
 		super(width, height);
 		this.listener = listener;
