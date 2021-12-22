@@ -1,10 +1,11 @@
 package chessroguelike.game;
 
 import chessroguelike.textRenderer.*;
+import java.io.*;
 
 /**
  * The scene class is a {@link Renderer} that allows you
- * to switch between scenes
+ * to switch to other renderers
  **/
 public abstract class Scene extends Renderer {
     // Used to move between scenes or back to the main menu
