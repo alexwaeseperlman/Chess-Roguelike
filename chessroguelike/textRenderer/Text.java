@@ -54,7 +54,6 @@ public class Text implements RenderObject {
         int cols = 0;
         // Number of rows that have been drawn
         int row = 0;
-<<<<<<< HEAD
         for (String line : content.split("\n")){
             for (String w : line.split(delimiter)) {
                 if (cols + w.length() + delimiter.length() > width) {
@@ -63,27 +62,10 @@ public class Text implements RenderObject {
                 }
 
                 for (int i = 0; i < (delimiter+w).length(); i++) {
-                    
                     Glyph c = new Glyph((w + delimiter).charAt(i), fg, bg);
                     out.add(new Pixel(c, cols, row, layer));
                     cols++;
                 }
-=======
-        for (String w : content.split(delimiter)) {
-            // Decide when to wrap text
-            if (cols + w.length()+delimiter.length() > width) {
-                cols = 0;
-                row++;
-            }
-
-            // Add all the characters from this step.
-            // It can be more than one because the delimiter
-            // can be multiple characters
-            for (int i = 0; i < (delimiter+w).length(); i++) {
-                Glyph c = new Glyph((delimiter+w).charAt(i), fg, bg);
-                out.add(new Pixel(c, cols, row, layer));
-                cols++;
->>>>>>> refs/remotes/origin/master
             }
             cols = 0;
             row ++;
