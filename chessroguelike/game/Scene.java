@@ -24,4 +24,9 @@ public abstract class Scene extends Renderer {
 		super(width, height);
 		this.listener = listener;
 	}
+	
+	private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        oos.writeObject(this);   
+    }
 }
