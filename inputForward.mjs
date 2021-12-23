@@ -18,8 +18,9 @@ import {spawn} from 'child_process';
 process.stdin.setRawMode(true);
 process.stdin.resume();
 
+console.log(process.argv);
 // Spawn the java script as a subprocess
-const s = spawn('java', ['-cp', '.:./build', 'Main']);
+const s = spawn('java', ['-cp', '.:./build', process.argv[2] || 'Main']);
 
 // Whenever data is received from stdin send it over
 process.stdin.on('data', (c) => {

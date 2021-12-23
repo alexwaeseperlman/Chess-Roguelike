@@ -70,7 +70,7 @@ public interface Move {
 
             @Override
             public ArrayList<Pixel> visualize(boolean attack) {
-                Line l = new Line(x, y, 1);
+                Line l = new Line(x, y);
                 if (attack) l.fg = new Color(255, 0, 0);
                 return l.draw();
             }

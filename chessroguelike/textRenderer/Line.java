@@ -8,31 +8,28 @@ import java.util.ArrayList;
 public class Line implements RenderObject {
     // declares variables used to display the current object
     public int x, y;
-    public int layer;
     public Color fg, bg;
     
     /**
     * Simplified constructor function
     * @param x : change in the x direction from the start of the line
     * @param y : change in the y direction from the start of the line
-    * @param layer : layer of the line
     */
-    public Line(int x, int y, int layer){
-        this(x, y, layer, Color.WHITE, Color.BLACK);
+    public Line(int x, int y){
+        this(x, y, Color.WHITE, Color.BLACK);
     }
     
     /**
     * Full constructor function
     * @param x : change in the x direction from the start of the line
     * @param y : change in the y direction from the start of the line
-    * @param layer : layer of the line
     * @param fg : text color (foreground)
     * @param bg : hight color (backgroud)
-    */
-    public Line(int x, int y, int layer, Color fg, Color bg) {
+    */    
+    public Line(int x, int y, Color fg, Color bg) {
+
         this.x = x;
         this.y = y;
-        this.layer = layer;
         this.fg = fg;
         this.bg = bg;
     }
@@ -61,21 +58,25 @@ public class Line implements RenderObject {
         
         // draw the horizontal part
         for (int i = startX+1; i < endX; i++) {
-            arr.add(new Pixel(new Glyph('─', fg, bg), i, horizY, layer));
+            arr.add(new Pixel(new Glyph('─', fg, bg), i, horizY));
         }
         
         // draw the vertical part
         for (int i = startY+1; i < endY; i++) {
-            arr.add(new Pixel(new Glyph('│', fg, bg), vertX, i, layer));
+            arr.add(new Pixel(new Glyph('│', fg, bg), vertX, i));
         }
-        
+
         // mark the turn point (horizontal -> vertical) with '+'
-        arr.add(new Pixel(new Glyph('+', fg, bg), vertX, horizY, layer));
+        arr.add(new Pixel(new Glyph('+', fg, bg), vertX, horizY));
         // mark the end points with 'x'
-        arr.add(new Pixel(new Glyph('x', fg, bg), 0, 0, layer));
-        arr.add(new Pixel(new Glyph('x', fg, bg), x, y, layer));
+        arr.add(new Pixel(new Glyph('x', fg, bg), 0, 0));
+        arr.add(new Pixel(new Glyph('x', fg, bg), x, y));
 
         // return the pixel arraylist
+        arr.add(new Pixel(new Glyph('+', fg, bg), vertX, horizY));
+        arr.add(new Pixel(new Glyph('x', fg, bg), 0, 0));
+        arr.add(new Pixel(new Glyph('x', fg, bg), x, y));
+
         return arr;
     }
 }

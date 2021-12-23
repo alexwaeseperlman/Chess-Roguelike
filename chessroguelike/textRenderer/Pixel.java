@@ -6,11 +6,26 @@ package chessroguelike.textRenderer;
  * glyphs are passed around between objects
  **/
 public class Pixel {
-    int x, y, layer;
+	Position pos;
     Glyph c;
 
     /**
      * Generate a glyph at the given position
+     **/
+    public Pixel(char c, int x, int y) {
+        this(new Glyph(c),x,y);
+    }
+
+    /**
+     * Generate a pixel with the given glyph at the given position
+     **/
+    public Pixel(Glyph c, int x, int y) {
+		this.c = c;
+		this.pos = new Position(x, y, 0);
+    }
+
+    /**
+     * Generate a glyph at the given position and layer
      **/
     public Pixel(char c, int x, int y, int layer) {
         this(new Glyph(c),x,y,layer);
@@ -21,8 +36,6 @@ public class Pixel {
      **/
     public Pixel(Glyph c, int x, int y, int layer) {
         this.c = c;
-        this.x = x;
-        this.y = y;
-        this.layer = layer;
+		this.pos = new Position(x, y, layer);
     }
 }

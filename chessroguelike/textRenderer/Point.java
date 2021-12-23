@@ -7,15 +7,13 @@ import java.util.Arrays;
  * @see Renderer
  **/
 public class Point implements RenderObject {
-  public int layer;
   Glyph c;
 
-  public Point(Glyph c, int layer) {
+  public Point(Glyph c) {
     this.c = c;
-    this.layer = layer;
   }
 
   public ArrayList<Pixel> draw() {
-    return new ArrayList<>(Arrays.asList(new Pixel[] {new Pixel(c, 0, 0, layer)}));
+    return new ArrayList<>(Arrays.asList(new Pixel[] {new Pixel(c, 0, 0)}));
   }
 }

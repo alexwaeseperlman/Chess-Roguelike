@@ -22,6 +22,7 @@ public class Renderer implements RenderObject {
     // The frame buffer stores pixels as they are rendered, before they go to the screen
     // This is important because it lets us avoid writing characters unnecessarily
     // which means that the game can actually be somewhat playable with an online terminal like repl.it
+	// This is one of the places where we used an array of objects
 	ArrayList<ArrayList<Glyph>> screen, fb;
 
     /**
@@ -30,15 +31,9 @@ public class Renderer implements RenderObject {
 	public Renderer(int width, int height) {
 		this.width = width;
 		this.height = height;
-		this.layer = 0;
 
 		screen = blankScreen();
 		fb = blankScreen();
-	}
-
-	public Renderer(int width, int height, int layer) {
-		this(width, height);
-		this.layer = layer;
 	}
 
 
@@ -74,25 +69,27 @@ public class Renderer implements RenderObject {
 		for (RenderObject obj : objects.keySet()) {
 			for (Pixel p : obj.draw()) {
                 // Shift pixels from object space into renderer space
-				p.x += objects.get(obj).x;
-				p.y += objects.get(obj).y;
+				p.pos.x += objects.get(obj).x;
+				p.pos.y += objects.get(obj).y;
+				p.pos.layer += objects.get(obj).layer;
                 // If the new pixel is in the screen of this renderer add it to a list to draw it
-				if (p.x < width && p.x >= 0 && p.y < height && p.y >= 0) {
+				if (p.pos.x < width && p.pos.x >= 0 && p.pos.y < height && p.pos.y >= 0) {
 						pixels.add(p);
 				}
 			}
 		}
 		// Sort pixels by their layer. This means that pixels with higher layer values will be painted to the buffer later
+		// This is one of the places where we use sorting
 		Collections.sort(pixels, new Comparator<Pixel>() {
 			@Override
 			public int compare(Pixel a, Pixel b) {
-                return a.layer - b.layer;
+                return a.pos.layer - b.pos.layer;
 			}
 		});
 
         // Draw pixels onto the framebuffer in order of their layer
 		for (Pixel p : pixels) {
-			if (!p.c.transparent) fb.get(p.y).set(p.x, p.c);
+			if (!p.c.transparent) fb.get(p.pos.y).set(p.pos.x, p.c);
 		}
 	}
 
