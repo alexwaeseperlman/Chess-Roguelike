@@ -14,7 +14,7 @@ class UserInterfaceTest extends Scene {
 	UserInterfaceTest(int width, int height, Scene.Listener l) {
 		super(width, height, l);
 		lastInput = new Text("You haven't inputted anything yet", 20);
-		textbox = new TextBox(width*2/3, 4, new TextBox.Listener() {
+		textbox = new TextBox("Enter your response (press enter to submit).", 60, 3, new TextBox.Listener() {
 			@Override
 			public void submitted(String text) {
 				lastInput.content = "Your last input was: \n" + text;
@@ -29,7 +29,7 @@ class UserInterfaceTest extends Scene {
 						// Do nothing
 						break;
 					case 1: // "Open a text box"
-						objects.put(textbox, new Position(10, 10));
+						objects.put(textbox, new Position(5, 10));
 						break;
 						
 				}
@@ -53,7 +53,7 @@ class UserInterface {
 	public static Scene activeScene;
 	public static void main(String[] args) {
         try {
-            FileOutputStream f =new FileOutputStream("err.txt");
+            FileOutputStream f = new FileOutputStream("err.txt");
     
             System.setErr(new PrintStream(f));
         } catch (FileNotFoundException f) {
