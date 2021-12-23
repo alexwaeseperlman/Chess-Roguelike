@@ -36,11 +36,13 @@ public interface Move {
     /**
      * Generate a move based on the difference in position it creates
      * All the normal chess moves can be implemented with this
-     * @param The applied difference on the x-axis
-     * @param The applied difference on the y-axis
+     * @param x: The applied difference on the x-axis
+     * @param y: The applied difference on the y-axis
+     * @return Move: the generated Move based on given x and y
      **/
     public static Move fromDifference(int x, int y) {
         Move out = new Move() {
+            // PLEASE EXPLAIN THESE FUNCTIONS
             @Override
             public boolean allowed(Piece p, Room m) {
 				if (!m.pieces.containsKey(p)) return false;
@@ -77,6 +79,7 @@ public interface Move {
         return out;
     }
 
+    // possible moves of pawn (its move set)
     public static Move[] pawn = {
         Move.fromDifference(1, 0),
         Move.fromDifference(0, 1),
@@ -84,6 +87,7 @@ public interface Move {
         Move.fromDifference(0, -1)
     };
 
+    // possible moves of rook
     public static Move[] rook = {
       Move.fromDifference(0, 1),
       Move.fromDifference(0, 2),
@@ -116,6 +120,7 @@ public interface Move {
       Move.fromDifference(-7, 0)
     };
 
+    // possible moves of knight
     public static Move[] knight = {
         Move.fromDifference(-1, 2),
         Move.fromDifference(1, 2),
@@ -129,9 +134,8 @@ public interface Move {
 
 
 
-    /*
-    Hashmap for storing referecing the names with their moves
-    */
+    
+    // Hashmap for storing referecing the names with their moves
     public static HashMap<String, Move[]> pieces = new HashMap<String, Move[]>(){
     {
         put("Knight", knight);
@@ -143,10 +147,13 @@ public interface Move {
     // get an array of keys
     public static Object[] piece_names = pieces.keySet().toArray();
 
+    // create new random generator
     Random generator = new Random();
 
     /*
-    Method for getting a valid name for pieces (to be used as index for getting moves within the GameScene)
+    * Method for getting a valid name for pieces (to be used as index * for getting moves within the GameScene)
+    * @param void
+    * @return String of piece name
     */
     public static String randomPiece(){
         System.out.println(piece_names[generator.nextInt(piece_names.length)]);

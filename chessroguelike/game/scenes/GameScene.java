@@ -5,6 +5,7 @@ import chessroguelike.game.map.*;
 import chessroguelike.Menu;
 import chessroguelike.textRenderer.*;
 import chessroguelike.game.engine.*;
+import chessroguelike.game.PlayerStats;
 import java.util.ArrayList;
 
 // regular imports
@@ -16,18 +17,57 @@ import java.io.ObjectInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/**
+* Subclass of Scene used to display the main game (room
+* with player and enemies, enemy engine, and text)
+* Handles player movement, and switches to {@link DeathScene}
+* or {@link TransitionScene} depending on result
+* also has save option
+*/
 class GameScene extends Scene implements Serializable {
+    // declare room, player, enemy engine, and text
 	Room room;
 	Piece player;
     Engine eng;
-
 	Text t;
-    GameScene(int width, int height, Listener listener) {
+
+    // declare # of enemies, player stats, and piece name
+    int enemies;
+    PlayerStats stats;
+    public String piece_name;
+
+    /**
+    * Constructor function for first level, gets a random piece to start
+    * with, and created new PlayerStats object
+    * @param width : width of the whole scene (NOT the room!)
+    * @param height : height of the whole scene (NOT the room!)
+    * @param listener : {@link Listener} object used to get input and switch scenes
+    */
+    GameScene(int width, int height, Listener listener){
+        this(width, height, listener, Move.randomPiece(), new PlayerStats());
+    }
+
+    /**
+    * Constructor function
+    * @param width : width of the whole scene (NOT the room!)
+    * @param height : height of the whole scene (NOT the room!)
+    * @param listener : {@link Listener} object used to get input and switch scenes
+    * @param piece_name : name of the piece the player is
+    * @param stats : PlayerStats object storing the player's current stats
+    */
+   GameScene(int width, int height, Listener listener, String piece_name, PlayerStats stats) {
         super(width, height, listener);
 
-		t = new Text("Use 'l' and 'h' to cycle between moves. Press m to make your selected move. Press escape to leave move select mode, press 's' to save.", 25);
+        // set piece_name and stats
+        this.piece_name = piece_name;
+        this.stats = stats;
 
+        // Instruction text to be displaye on screen
+		t = new Text("Use 'l' and 'h' to cycle between moves. Press m to make your selected move. Press escape to leave move select mode, 'q' to quit, 's' to save." + "\n\nCurrently playing as:" + piece_name, 25);
+
+        // creates player
 		player = new Piece() {
+            // draws the player on the topleft corner
 			@Override
 			public ArrayList<Pixel> drawPiece() {
 				ArrayList<Pixel> out = new ArrayList<Pixel>();
@@ -35,16 +75,29 @@ class GameScene extends Scene implements Serializable {
 				return out;
 			}
 		};
-		room = Room.generate(20, 10, 3, player, new Position(3, 3));
-        eng = new Engine(room);
-		player.visualizingMove = true;
-		player.moves = Move.knight;
 
+        // generates random number of enemies between 3 an 5 (inclusive)
+        enemies = 3 + (int) (Math.random() * 3);
+        // generates the room
+		room = Room.generate(20, 10, enemies, player, new Position(3, 3));
+        // assigns new enemy engine to the room
+        eng = new Engine(room);
+        // visualize the player moves
+		player.visualizingMove = true;
+        // get player moves according to its type (piece_name)
+		player.moves = Move.pieces.get(piece_name);
+
+        // put the room and the text on screen
 		objects.put(room, new Position(1, 1));
 		objects.put(t, new Position(25, 1));
     }
-
+    
+    /**
+    * Handles user input and acts accordingly
+    * @param c : character inputted
+    */
 	public void input(char c) {
+        
 		if (c == 'l') {
 			player.cycleMove(1);
 			player.visualizingMove = true;
@@ -69,6 +122,11 @@ class GameScene extends Scene implements Serializable {
         }
         if (c == 'q') {
             backToMainMenu();
+        }
+
+        // TODO: Remove after done debugging
+        if (c == 'w'){
+            win();
         }      
 
         player.attacking = player.moves[player.selectedMove].wouldAttack(player, room);

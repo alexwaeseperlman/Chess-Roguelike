@@ -13,6 +13,7 @@ public class MenuScene extends Scene {
     public MenuScene(int width, int height, Listener listener) {
         super(width, height, listener);
 
+        // Menu object for all the options
 		menu = new Menu(new String[]{"Play", "Saved games", "Instructions", "Exit Game"}, 30, 9, new Menu.Listener() {
 			public void onSelect(int selection) {
 				switch (selection) {
@@ -37,6 +38,7 @@ public class MenuScene extends Scene {
 			}
 		});
 
+        // place the menu on the screen
         objects.put(menu, new Position(2, 2));
     }
 
