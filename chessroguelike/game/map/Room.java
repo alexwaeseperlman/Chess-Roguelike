@@ -35,16 +35,13 @@ public class Room extends Renderer {
         Piece target = atPosition(pos);
         // if the target position is not in the room, return null
         if (!inRoom(pos)) return null;
-<<<<<<< HEAD
         // update the piece in pieces and objects
         pieces.put(p, pos);
         objects.put(p, pos);
         // refresh the screen
-=======
 		Position drawPos = new Position(pos.x, pos.y, 2);
         pieces.put(p, pos);
         objects.put(p, drawPos);
->>>>>>> d5fc705a10d38c7092ea4edb85786e67c56a85c2
 		refresh();
         // if a piece was taken, kill that piece and return it
         if (target != null) {
