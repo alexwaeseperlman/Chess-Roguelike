@@ -181,10 +181,23 @@ class GameScene extends Scene implements Serializable {
     void toGameSavedMsg() {
         listener.move(new GameSavedMsg(width, height, listener));
     }
+
+    /**
+    * Gets called when the player looses and moves to DeathScene
+    */
     void lose() {
-        listener.move(new MenuScene(width, height, listener));
+        listener.move(new DeathScene(width, height, listener, stats));
     }
+    /**
+    * Gets called when the player beats all the enemies
+    * updates player stats and moves to {@link TransitionScene}
+    */
     void win() {
-        listener.move(new MenuScene(width, height, listener));
+        // update the stats of the player
+        stats.enemies_killed += enemies;
+        stats.levels_completed ++;
+        stats.addPiece(piece_name);
+        // move the the transition scene
+        listener.move(new TransitionScene(width, height, listener, stats));
     }
 }
