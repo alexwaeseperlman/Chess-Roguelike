@@ -4,17 +4,15 @@ import java.util.ArrayList;
 
 public class Line implements RenderObject {
     public int x, y;
-    public int layer;
     public Color fg, bg;
     
-    public Line(int x, int y, int layer){
-        this(x, y, layer, Color.WHITE, Color.BLACK);
+    public Line(int x, int y){
+        this(x, y, Color.WHITE, Color.BLACK);
     }
     
-    public Line(int x, int y, int layer, Color fg, Color bg) {
+    public Line(int x, int y, Color fg, Color bg) {
         this.x = x;
         this.y = y;
-        this.layer = layer;
         this.fg = fg;
         this.bg = bg;
     }
@@ -35,16 +33,16 @@ public class Line implements RenderObject {
         }
         
         for (int i = startX+1; i < endX; i++) {
-            arr.add(new Pixel(new Glyph('─', fg, bg), i, horizY, layer));
+            arr.add(new Pixel(new Glyph('─', fg, bg), i, horizY));
         }
         
         for (int i = startY+1; i < endY; i++) {
-            arr.add(new Pixel(new Glyph('│', fg, bg), vertX, i, layer));
+            arr.add(new Pixel(new Glyph('│', fg, bg), vertX, i));
         }
         
-        arr.add(new Pixel(new Glyph('+', fg, bg), vertX, horizY, layer));
-        arr.add(new Pixel(new Glyph('x', fg, bg), 0, 0, layer));
-        arr.add(new Pixel(new Glyph('x', fg, bg), x, y, layer));
+        arr.add(new Pixel(new Glyph('+', fg, bg), vertX, horizY));
+        arr.add(new Pixel(new Glyph('x', fg, bg), 0, 0));
+        arr.add(new Pixel(new Glyph('x', fg, bg), x, y));
     
         return arr;
     }

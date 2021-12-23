@@ -22,7 +22,6 @@ public class Menu extends Renderer {
     Text[] texts;
 	
 	int buttonWidth, buttonHeight;
-    int x, y;
 
     int selection = 0;
 
@@ -53,14 +52,14 @@ public class Menu extends Renderer {
         // Construct each button
         for (int i = 0; i < options.length; i++) {
             // A button consists of a rect with a text object on top of it
-            buttons[i] = new Rect(buttonWidth, buttonHeight, 0);
-            texts[i] = new Text(options[i], buttonWidth, 1);
+            buttons[i] = new Rect(buttonWidth, buttonHeight);
+            texts[i] = new Text(options[i], buttonWidth);
 
             // Text is placed in a position offset to the right 
             // by 3 units from the edge of the rectangle.
             // This was decided on through trial and error because it looks nice
-            this.objects.put(buttons[i], new Position(0, i*height/options.length));
-            this.objects.put(texts[i], new Position(3, i*height/options.length+1));
+            this.objects.put(buttons[i], new Position(0, i*height/options.length, 0));
+            this.objects.put(texts[i], new Position(3, i*height/options.length+1, 2));
         }
         update();
 	}
@@ -79,8 +78,7 @@ public class Menu extends Renderer {
             }
             // All other buttons default to the color black
             // TODO: It might be necessary in the future to make this
-            // color into a property so that menus can be configured
-            // when necessary. 
+            // color into a property so that menus can be configured.
             // We haven't needed that functionality yet.
             else {
                 buttons[i].bg = Color.BLACK;

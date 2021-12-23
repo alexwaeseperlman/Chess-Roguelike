@@ -4,10 +4,14 @@ package chessroguelike.textRenderer;
  * */
 public class Position {
     // x and y of this position
-	public int x, y;
+	public int x, y, layer = 0;
 	public Position(int x, int y) {
 		this.x = x;
 		this.y = y;
+	}
+	public Position(int x, int y, int layer) {
+		this(x, y);
+		this.layer = layer;
 	}
 
     /**

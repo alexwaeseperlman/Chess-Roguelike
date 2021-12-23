@@ -32,11 +32,11 @@ public class TextBox extends Renderer {
 		super(width, height);
         this.l = l;
         
-		box = new Rect(width-1, height-1, 1000);
+		box = new Rect(width-1, height-1);
 		box.backgroundChar = ' ';
-		textDisplay = new Text(text + '|', width-2, 1001);
-		this.objects.put(box, new Position(0, 0));
-		this.objects.put(textDisplay, new Position(1, 1));
+		textDisplay = new Text(text + '|', width-2);
+		this.objects.put(box, new Position(0, 0, 0));
+		this.objects.put(textDisplay, new Position(1, 1, 1));
         update();
 	}
 

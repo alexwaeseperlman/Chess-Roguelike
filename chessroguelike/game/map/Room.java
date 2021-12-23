@@ -22,7 +22,7 @@ public class Room extends Renderer {
 
 		pieces = new HashMap<Piece, Position>();
 
-        objects.put(new Rect(width, height, 0), new Position(0, 0));
+        objects.put(new Rect(width, height), new Position(0, 0));
     }
 
 	/**
@@ -32,8 +32,9 @@ public class Room extends Renderer {
     public Piece updatePiece(Piece p, Position pos) {
         Piece target = atPosition(pos);
         if (!inRoom(pos)) return null;
+		Position drawPos = new Position(pos.x, pos.y, 2);
         pieces.put(p, pos);
-        objects.put(p, pos);
+        objects.put(p, drawPos);
 		refresh();
         if (target != null) {
             killPiece(target);
