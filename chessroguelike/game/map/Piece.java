@@ -1,3 +1,4 @@
+
 package chessroguelike.game.map; 
 import chessroguelike.textRenderer.*;
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ abstract public class Piece implements RenderObject {
     // declare an array of moves
     public Move[] moves;
 
+    int currentTarget[];
+
 	/**
 	 * Get a list of pixels representing what this piece should look like.
 	 * */
@@ -27,6 +30,80 @@ abstract public class Piece implements RenderObject {
 		if (moves.length == 0) return;
 		selectedMove = (moves.length+selectedMove+x)%moves.length;
 	}
+
+    public void setMoves(Move[] moves){
+        this.moves = moves;
+        currentTarget = moves[selectedMove].getTarget();
+    }
+
+    /**
+    * Selects the closest move that increases in direction
+    * @param direction : 0 for x, 1 for y
+    */
+    public void increase(int direction, int other){
+        // finds a move that moves father in direction
+        // while storing an alternative that is equal but different
+        int current_length = 100, best = 100;
+        ArrayList<Integer> possible_moves = new ArrayList<Integer>();
+        int move;
+        for (int i=0; i<moves.length; i++){
+            move = moves[i].getTarget()[direction];
+            if (move > currentTarget[direction]){
+                if (move == current_length){
+                    possible_moves.add(i);
+                } else if (move < current_length){
+                    current_length = move;
+                    possible_moves.clear();
+                    possible_moves.add(i);
+                } 
+            }
+        }
+        if (! possible_moves.isEmpty()){
+            for (int m : possible_moves){
+                if (Math.abs(moves[m].getTarget()[other] - currentTarget[other]) < best){
+                    best = Math.abs(moves[m].getTarget()[other] - currentTarget[other]);
+                    selectedMove = m;
+                }
+            }
+        }
+        
+        currentTarget = moves[selectedMove].getTarget();
+    }
+
+    /**
+    * Selects the closest move that decreases in direction
+    * @param direction : 0 for x, 1 for y
+    */
+    public void decrease(int direction, int other){
+        // finds a move that moves father in direction
+        // while storing an alternative that is equal but different
+        int current_length = -100, best = 100;
+        ArrayList<Integer> possible_moves = new ArrayList<Integer>();
+        int move;
+        for (int i=0; i<moves.length; i++){
+            move = moves[i].getTarget()[direction];
+            if (move < currentTarget[direction]){
+                if (move == current_length){
+                    possible_moves.add(i);
+                } else if (move > current_length){
+                    current_length = move;
+                    possible_moves.clear();
+                    possible_moves.add(i);
+                } 
+            }
+        }
+        if (! possible_moves.isEmpty()){
+            for (int m : possible_moves){
+                if (Math.abs(moves[m].getTarget()[other] - currentTarget[other]) < best){
+                    best = Math.abs(moves[m].getTarget()[other] - currentTarget[other]);
+                    selectedMove = m;
+                }
+            }
+        }
+        
+        currentTarget = moves[selectedMove].getTarget();
+    }
+
 
     /**
     * Returns an arraylist of pixels for the selected move

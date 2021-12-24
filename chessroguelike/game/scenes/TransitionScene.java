@@ -32,7 +32,7 @@ class TransitionScene extends Scene{
         String piece_name = Move.randomPiece();
 
         // display message for user
-        t = new Text("Good Job!\n" + stats.displayStats() + "\n\nIf you choose 'Next Level', you will be playing as: " + piece_name
+        t = new Text("Good Job!\n" + stats.displayStats() + "\n\nYou will be playing as: " + piece_name
         , 19);
 
         // options menu

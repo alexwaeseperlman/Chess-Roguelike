@@ -3,6 +3,7 @@ import chessroguelike.textRenderer.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+
 /**
  * A move is an object that can apply movement to a {@link:Piece}
  * Moves can only affect one piece at a time
@@ -26,6 +27,9 @@ public interface Move {
     Piece apply(Piece p, Room m);
 	Move inverse();
 
+    public int[] getTarget();
+
+
     /**
      * Generate a list of pixels that visualize this move
      * @param attack Sets whether or not the visualized move is an attack.
@@ -42,6 +46,14 @@ public interface Move {
      **/
     public static Move fromDifference(int x, int y) {
         Move out = new Move() {
+            @Override
+            /**
+            * Function for getting the target position of the move
+            * @return an integer array, x first, y second
+            */
+            public int[] getTarget(){
+                return new int[] {x, y};
+            }
             // PLEASE EXPLAIN THESE FUNCTIONS
             @Override
             public boolean allowed(Piece p, Room m) {

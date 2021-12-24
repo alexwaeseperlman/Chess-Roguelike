@@ -63,7 +63,7 @@ class GameScene extends Scene implements Serializable {
         this.stats = stats;
 
         // Instruction text to be displaye on screen
-		t = new Text("Use 'l' and 'h' to cycle between moves. Press m to make your selected move. Press escape to leave move select mode, 'q' to quit, 's' to save." + "\n\nCurrently playing as:" + piece_name, 25);
+		t = new Text("Use 'u' 'h' 'j' & 'k' to select moves. Press m or enter to make your selected move. \nPress escape to leave move select mode, 'q' to quit, 's' to save." + "\n\nCurrently playing as: " + piece_name, 25);
 
         // creates player
 		player = new Piece() {
@@ -85,7 +85,7 @@ class GameScene extends Scene implements Serializable {
         // visualize the player moves
 		player.visualizingMove = true;
         // get player moves according to its type (piece_name)
-		player.moves = Move.pieces.get(piece_name);
+		player.setMoves(Move.pieces.get(piece_name));
 
         // put the room and the text on screen
 		objects.put(room, new Position(1, 1));
@@ -97,15 +97,26 @@ class GameScene extends Scene implements Serializable {
     * @param c : character inputted
     */
 	public void input(char c) {
-        
-		if (c == 'l') {
-			player.cycleMove(1);
-			player.visualizingMove = true;
-		}
-		if (c == 'h') {
-			player.cycleMove(-1);
-			player.visualizingMove = true;
-		}
+        if (c == 'u'){
+            player.decrease(1, 0);
+            player.visualizingMove = true;
+        }
+
+        if (c == 'j'){
+            player.increase(1, 0);
+            player.visualizingMove = true;
+        }
+
+        if (c == 'h'){
+            player.decrease(0, 1);
+            player.visualizingMove = true;
+        }
+
+        if (c == 'k'){
+            player.increase(0, 1);
+            player.visualizingMove = true;
+        }
+
 		if (c == '\u001B') player.visualizingMove = false;
 
 		if (c == 'm' || c == 13) {
