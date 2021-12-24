@@ -86,7 +86,6 @@ class GameScene extends Scene implements Serializable {
 		player.visualizingMove = true;
         // get player moves according to its type (piece_name)
 		player.setMoves(Move.pieces.get(piece_name));
-        player.room = room;
 
         // put the room and the text on screen
 		objects.put(room, new Position(1, 1));
@@ -98,27 +97,28 @@ class GameScene extends Scene implements Serializable {
     * @param c : character inputted
     */
 	public void input(char c) {
+		Position playerPosition = player.moves[player.selectedMove].simulate(player, room);
         // move up (decrease in y direction)
-        if (c == 'u'){
-            player.decrease(1, 0);
+        if (c == 'k'){
+            player.increase(new Position(0, 1), playerPosition, room);
             player.visualizingMove = true;
         }
 
         // move down (increase in y direction)
         if (c == 'j'){
-            player.increase(1, 0);
+            player.increase(new Position(0, -1), playerPosition, room);
             player.visualizingMove = true;
         }
 
-        // move left (decrease in x direction)
+        // move left (increase in x direction)
         if (c == 'h'){
-            player.decrease(0, 1);
+            player.increase(new Position(1, 0), playerPosition, room);
             player.visualizingMove = true;
         }
 
-        // move right (increase in y direction)
-        if (c == 'k'){
-            player.increase(0, 1);
+        // move right (decrease in x direction)
+        if (c == 'l'){
+            player.increase(new Position(-1, 0), playerPosition, room);
             player.visualizingMove = true;
         }
 

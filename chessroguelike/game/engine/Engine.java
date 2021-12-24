@@ -52,14 +52,6 @@ public class Engine implements Runnable {
         running = false;
     }
 
-    double calcDistance (Piece player, Piece piece, int[] move){
-        // pythgorean theorem
-        Position player_pos = room.pieces.get(player);
-        Position piece_pos = room.pieces.get(piece).add(move[0], move[1]);
-        double dis = Math.pow((player_pos.x - piece_pos.x), 2) + Math.pow((player_pos.y - piece_pos.y), 2);
-        return Math.sqrt(dis);
-    }
-
     /**
      * Make the best moves for given pieces
      * */
@@ -93,9 +85,11 @@ public class Engine implements Runnable {
                 } 
                 // if the piece if going to attack another enemy piece, don't
                 else if (move.wouldAttack(p, room)) continue;
+				Position outcome = move.simulate(p, room);
+				int distance = outcome.squareDist(room.pieces.get(player));
                 // if this move is closer to the player than the previous ones, select it
-                if (calcDistance(player, p, move.getTarget()) < closest_dis){
-                    closest_dis = calcDistance(player, p, move.getTarget());
+                if (distance < closest_dis){
+                    closest_dis = distance;
                     selected = move;
                 }
             }

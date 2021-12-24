@@ -45,7 +45,14 @@ public interface Move {
     Piece apply(Piece p, Room m);
 	Move inverse();
 
-    public int[] getTarget();
+	/**
+	 * Simulate applying this move to a {@link Piece} in a {@link Room}. 
+	 * This method can assume that the move is allowed.
+	 * @param p : The piece this move would be applied to
+	 * @param m : The room that piece is in
+	 * @return The ending position of that piece
+	 * */
+    public Position simulate(Piece p, Room m);
 
 
     /**
@@ -65,12 +72,8 @@ public interface Move {
     public static Move fromDifference(int x, int y) {
         Move out = new Move() {
             @Override
-            /**
-            * Function for getting the target position of the move
-            * @return an integer array, x first, y second
-            */
-            public int[] getTarget(){
-                return new int[] {x, y};
+            public Position simulate(Piece p, Room m) {
+                return m.pieces.get(p).add(x, y);
             }
             
             @Override

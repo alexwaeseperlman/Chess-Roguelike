@@ -32,6 +32,20 @@ public class Position {
 		return add(new Position(x, y));
 	}
 
+	/**
+	 * Get the additive inverse of this position
+	 * */
+	public Position negative() {
+		return new Position(-x, -y);
+	}
+
+	/**
+	 * Get the squared distance between this position and another
+	 * */
+	public int squareDist(Position rhs) {
+		return (x-rhs.x)*(x-rhs.x) + (y-rhs.y)*(y-rhs.y);
+	}
+
     /**
      * Check if two positions are exactly equal
      **/
