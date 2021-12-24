@@ -39,26 +39,36 @@ abstract public class Piece implements RenderObject {
     /**
     * Selects the closest move that increases in direction
     * @param direction : 0 for x, 1 for y
+    * @param other : other corresponding direction
     */
     public void increase(int direction, int other){
-        // finds a move that moves father in direction
-        // while storing an alternative that is equal but different
-        int current_length = 100, best = 100;
-        ArrayList<Integer> possible_moves = new ArrayList<Integer>();
+        // declare and initialize variables used for tracking
+        int current_length = 100; // length in direction of current candidate moves
+        int best = 100; // best (min) difference in other direction
+        ArrayList<Integer> possible_moves = new ArrayList<Integer>(); // indexes of possible moves
         int move;
+        // loop through possible moves
         for (int i=0; i<moves.length; i++){
             move = moves[i].getTarget()[direction];
+            // if the move is father in direction
             if (move > currentTarget[direction]){
+                // if move is equal to length of other candidate moves, add it to possible_moves
                 if (move == current_length){
                     possible_moves.add(i);
-                } else if (move < current_length){
+                } 
+                // if move is closer than other candidate moves
+                // update current_length and  clear possible_moves 
+                // then add the move to possible_moves
+                else if (move < current_length){
                     current_length = move;
                     possible_moves.clear();
                     possible_moves.add(i);
                 } 
             }
         }
+        // if there is/are possible moves
         if (! possible_moves.isEmpty()){
+            // loop through them and find the one that is closer in the other direction to the current one
             for (int m : possible_moves){
                 if (Math.abs(moves[m].getTarget()[other] - currentTarget[other]) < best){
                     best = Math.abs(moves[m].getTarget()[other] - currentTarget[other]);
@@ -67,16 +77,17 @@ abstract public class Piece implements RenderObject {
             }
         }
         
+        // update current target
         currentTarget = moves[selectedMove].getTarget();
     }
 
     /**
     * Selects the closest move that decreases in direction
     * @param direction : 0 for x, 1 for y
+    * @param other : other corresponding direction
     */
     public void decrease(int direction, int other){
-        // finds a move that moves father in direction
-        // while storing an alternative that is equal but different
+        // see increase(int direction, int other) for explanations
         int current_length = -100, best = 100;
         ArrayList<Integer> possible_moves = new ArrayList<Integer>();
         int move;
