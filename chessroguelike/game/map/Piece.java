@@ -17,6 +17,7 @@ abstract public class Piece implements RenderObject {
     public Move[] moves;
 
     int currentTarget[];
+    public Room room;
 
 	/**
 	 * Get a list of pixels representing what this piece should look like.
@@ -50,6 +51,9 @@ abstract public class Piece implements RenderObject {
         // loop through possible moves
         for (int i=0; i<moves.length; i++){
             move = moves[i].getTarget()[direction];
+            // if the move is not allowed, skip it
+            if (! moves[i].allowed(this, room)) continue;
+
             // if the move is father in direction
             if (move > currentTarget[direction]){
                 // if move is equal to length of other candidate moves, add it to possible_moves
@@ -93,6 +97,8 @@ abstract public class Piece implements RenderObject {
         int move;
         for (int i=0; i<moves.length; i++){
             move = moves[i].getTarget()[direction];
+            // if the move is not allowed, skip it
+            if (! moves[i].allowed(this, room)) continue;
             if (move < currentTarget[direction]){
                 if (move == current_length){
                     possible_moves.add(i);
@@ -114,7 +120,6 @@ abstract public class Piece implements RenderObject {
         
         currentTarget = moves[selectedMove].getTarget();
     }
-
 
     /**
     * Returns an arraylist of pixels for the selected move

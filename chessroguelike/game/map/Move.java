@@ -22,8 +22,26 @@ public interface Move {
      * @param m The {@link Room} that the piece is in
      **/
     boolean allowed(Piece p, Room m);
+    /**
+    * Test whether the piece p can attack the target
+    * @param p : piece doing the attack
+    * @param tager : piece that is the target
+    * @param m : Room that contains the pieces
+    */
+    boolean wouldAttack(Piece p, Piece target, Room m);
+    /**
+    * Test whether the piece p can attack any other piece
+    * @param p : piece doing the attack
+    * @param m : Room that contains the pieces
+    */
     boolean wouldAttack(Piece p, Room m);
-    // Returns a piece that was taken (possibly null)
+
+    /**
+    * Returns a piece that was taken (possibly null)
+    * @param p : piece doing the move
+    * @param m : Room that contains pieces
+    * @return the piece that was taken (possibly null)
+    */
     Piece apply(Piece p, Room m);
 	Move inverse();
 
@@ -54,10 +72,10 @@ public interface Move {
             public int[] getTarget(){
                 return new int[] {x, y};
             }
-            // PLEASE EXPLAIN THESE FUNCTIONS
+            
             @Override
             public boolean allowed(Piece p, Room m) {
-				if (!m.pieces.containsKey(p)) return false;
+				if (! m.pieces.containsKey(p)) return false;
 				Position pos = m.pieces.get(p);
                 return m.inRoom(pos.x + x, pos.y + y);
             }
@@ -67,6 +85,12 @@ public interface Move {
                 return m.filledPosition(m.pieces.get(p).add(x, y));
 
             }
+            @Override
+            public boolean wouldAttack(Piece p, Piece target, Room m) {
+				if (!m.pieces.containsKey(p)) return false;
+                return m.pieces.get(target).equals(m.pieces.get(p).add(x, y));
+            }
+            
             @Override
             public Piece apply(Piece p, Room m) {
                 if (allowed(p, m)) {

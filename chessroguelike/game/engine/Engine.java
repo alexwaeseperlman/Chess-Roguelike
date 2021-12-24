@@ -3,7 +3,6 @@ package chessroguelike.game.engine;
 import chessroguelike.game.map.*;
 import chessroguelike.textRenderer.Position;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.ArrayList;
 
 /**
@@ -53,26 +52,56 @@ public class Engine implements Runnable {
         running = false;
     }
 
+    double calcDistance (Piece player, Piece piece, int[] move){
+        // pythgorean theorem
+        Position player_pos = room.pieces.get(player);
+        Position piece_pos = room.pieces.get(piece).add(move[0], move[1]);
+        double dis = Math.pow((player_pos.x - piece_pos.x), 2) + Math.pow((player_pos.y - piece_pos.y), 2);
+        return Math.sqrt(dis);
+    }
+
     /**
      * Make the best moves for given pieces
      * */
     public synchronized void makeMoves(Piece player) {
         // Make moves for pieces in the room
 
-        // Just do it randomly
-        Random rand = new Random();
+        // variable declaration
+        double closest_dis; // straight line distance between move and player
+        Move selected = Move.fromDifference(0, 0); // blank move
         
-        ArrayList<Piece> pieces = new ArrayList<Piece>();
+        ArrayList<Piece> pieces = new ArrayList<Piece>(); // pieces at hand
         for (Piece p : room.pieces.keySet()) {
             // Don't make moves for the player
-            if (p == player) continue;
+            if (p == player){
+                continue;
+            }
             pieces.add(p);
         }
+
+        // for every piece
         for (Piece p : pieces) {
             // Don't make moves if this piece doesn't have options
             if (p == null || p.moves == null) continue;
-            int move = rand.nextInt(p.moves.length);
-            if (move >= 0 && move < p.moves.length) p.moves[move].apply(p, room);
+            // set closest distance to a large number
+            closest_dis = 1000;
+            for (Move move : p.moves){
+                // if the piece can kill the player, do so, then break out of the method
+                if (move.wouldAttack(p, player, room)){
+                    move.apply(p, room);
+                    return;
+                } 
+                // if the piece if going to attack another enemy piece, don't
+                else if (move.wouldAttack(p, room)) continue;
+                // if this move is closer to the player than the previous ones, select it
+                if (calcDistance(player, p, move.getTarget()) < closest_dis){
+                    closest_dis = calcDistance(player, p, move.getTarget());
+                    selected = move;
+                }
+            }
+            
+            // apply the selected move
+            selected.apply(p, room);
         }
     }
 

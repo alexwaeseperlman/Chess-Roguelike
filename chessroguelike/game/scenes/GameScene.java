@@ -86,6 +86,7 @@ class GameScene extends Scene implements Serializable {
 		player.visualizingMove = true;
         // get player moves according to its type (piece_name)
 		player.setMoves(Move.pieces.get(piece_name));
+        player.room = room;
 
         // put the room and the text on screen
 		objects.put(room, new Position(1, 1));
@@ -97,21 +98,25 @@ class GameScene extends Scene implements Serializable {
     * @param c : character inputted
     */
 	public void input(char c) {
+        // move up (decrease in y direction)
         if (c == 'u'){
             player.decrease(1, 0);
             player.visualizingMove = true;
         }
 
+        // move down (increase in y direction)
         if (c == 'j'){
             player.increase(1, 0);
             player.visualizingMove = true;
         }
 
+        // move left (decrease in x direction)
         if (c == 'h'){
             player.decrease(0, 1);
             player.visualizingMove = true;
         }
 
+        // move right (increase in y direction)
         if (c == 'k'){
             player.increase(0, 1);
             player.visualizingMove = true;
@@ -122,9 +127,23 @@ class GameScene extends Scene implements Serializable {
 		if (c == 'm' || c == 13) {
             boolean allowed = player.moves[player.selectedMove].allowed(player, room);
             if (allowed) {
+                // apply the move
                 Piece target = player.moves[player.selectedMove].apply(player, room);
+
+                // refresh screen, then sleep for 0.5 seconds
+                // so user can see what they have done
+                refreshScreen();
+                try {
+                    Thread.sleep(500);
+                }
+                catch(InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+
                 // Only move ai if player didn't take a piece
-                if (target == null) eng.makeMoves(player);
+                if (target == null){
+                    eng.makeMoves(player);
+                }
             }
         }
         if (c == 's') {
@@ -140,7 +159,10 @@ class GameScene extends Scene implements Serializable {
             win();
         }      
 
+        // if the player can attack, change the line color to red
         player.attacking = player.moves[player.selectedMove].wouldAttack(player, room);
+
+        // if the move is out of bounds, do not display
         player.visualizingMove = player.moves[player.selectedMove].allowed(player, room);
 
         if (!room.pieces.containsKey(player)) {
