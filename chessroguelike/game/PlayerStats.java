@@ -1,12 +1,13 @@
 package chessroguelike.game;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
 * Class for storing player stats, including levels completed,
 * enemies killed, and types & frequency if piece played
 */
-public class PlayerStats{
+public class PlayerStats implements Serializable {
     public int levels_completed;
     public int enemies_killed;
     

@@ -1,11 +1,13 @@
 package chessroguelike.textRenderer;
 
+import java.io.Serializable;
+
 /**
  * This class stores a character and a color
  * It can be thought of as an indidual pixel for
  * the text {@link:TextRenderer}
  */
-public class Glyph {
+public class Glyph implements Serializable {
     // foreground, background
     Color fg, bg;
     // The shape of this glyph is just a character

@@ -1,30 +1,37 @@
 package chessroguelike.game.map;
 
 import chessroguelike.textRenderer.*;
-import chessroguelike.game.map.pieces.*;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.Random;
 
 /**
  * A class to render a store game state
  **/
-public class Room extends Renderer {
-    final int height, width;
+public class Room implements Serializable {
+    int height, width;
 	// Stores the location of every piece int the room
     public HashMap<Piece, Position> pieces;
 
-    public Room(int width, int height) {
-		// Initialize the renderer to be a bit larger than the room so we render its borders
-        super(width+2, height+2);
+	public transient Renderer renderer;
 
+    public Room(int width, int height) {
         this.width = width;
         this.height = height;
+		setup();
+    }
 
+	/**
+	 * Set up the renderer for this room
+	 * */
+	void setup() {
+		// Initialize the renderer to be a bit larger than the room so we render its borders
+		renderer = new Renderer(width+2, height+2);
         // declare hashmap used to store pieces and their positions
 		pieces = new HashMap<Piece, Position>();
-
-        objects.put(new Rect(width, height), new Position(0, 0));
-    }
+        renderer.objects.put(new Rect(width, height), new Position(0, 0));
+	}
 
 	/**
 	 * Update the position of a piece. This handles updating the render object and the piece position map
@@ -38,10 +45,10 @@ public class Room extends Renderer {
         // update the piece's position in the room and the renderer
         Position drawPos = new Position(pos.x, pos.y, 2);
         pieces.put(p, pos);
-        objects.put(p, drawPos);
+        renderer.objects.put(p, drawPos);
 
         // refresh the screen
-        refresh();
+        renderer.refresh();
         // if a piece was taken, kill that piece and return it
         if (target != null) {
             killPiece(target);
@@ -58,7 +65,7 @@ public class Room extends Renderer {
     void killPiece(Piece p) {
         // TODO: Handle player death
         pieces.remove(p);
-        objects.remove(p);
+        renderer.objects.remove(p);
     }
 
 	/**
@@ -132,10 +139,28 @@ public class Room extends Renderer {
                 p = new Position(rand.nextInt(w), rand.nextInt(h));
                 guesses++;
             } while ((room.filledPosition(p) || !room.inRoom(p)) && guesses < 100 /* give up */);
-            if (!room.filledPosition(p)) room.updatePiece(new Pawn(), p);
+            if (!room.filledPosition(p)) room.updatePiece(Piece.pawn(), p);
         }
 
         // return the generated room
         return room;
+    }
+
+	 
+    private void readObject(ObjectInputStream inp) throws ClassNotFoundException, IOException {       
+		width = inp.readInt();
+        height = inp.readInt();
+        HashMap<Piece, Position> loadedPieces = (HashMap<Piece, Position>)inp.readObject();
+		setup();
+		for (Piece p : loadedPieces.keySet()) {
+			pieces.put(p, loadedPieces.get(p));
+			renderer.objects.put(p, loadedPieces.get(p));
+		}
+    }
+ 
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.writeInt(width);
+        out.writeInt(height);
+        out.writeObject(pieces);
     }
 }

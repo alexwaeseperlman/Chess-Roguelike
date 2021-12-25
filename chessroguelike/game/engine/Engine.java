@@ -77,7 +77,8 @@ public class Engine implements Runnable {
             if (p == null || p.moves == null) continue;
             // set closest distance to a large number
             closest_dis = 1000;
-            for (Move move : p.moves){
+            for (int i : p.moves){
+				Move move = Piece.moveSet.get(i);
                 // if the piece can kill the player, do so, then break out of the method
                 if (move.wouldAttack(p, player, room)){
                     move.apply(p, room);

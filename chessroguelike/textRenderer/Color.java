@@ -1,10 +1,12 @@
 package chessroguelike.textRenderer;
 
+import java.io.Serializable;
+
 /**
  * A simple class to represent colors
  * It has some common colors built in
  **/
-public class Color {
+public class Color implements Serializable {
   public static final Color 
   // standard console colors
   WHITE = new Color(255, 255, 255),

@@ -4,17 +4,11 @@ import chessroguelike.game.Scene;
 import chessroguelike.Menu;
 
 import chessroguelike.textRenderer.*;
-/*
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-*/
+import java.io.*;
 
-class SavedGameScene extends Scene {
+class LoadGameScene extends Scene {
     Scene savedGameScene;
-    SavedGameScene(int width, int height, Listener listener) {
+    LoadGameScene(int width, int height, Listener listener) {
         super(width, height, listener);
         objects.put(new Text("Game loaded, press 'c' to continue, or 'b' to go back to main menu.", 25), new Position(2, 2));
     }
@@ -29,7 +23,18 @@ class SavedGameScene extends Scene {
 	}
 
     void goToGameScene() {
-        listener.move(new GameScene(width, height, listener));
+		GameScene game = new GameScene(width, height, listener);
+		try {
+			FileInputStream fin = new FileInputStream("SavedGame.ser");
+			ObjectInputStream oin = new ObjectInputStream(fin);
+			SavedGame sg = (SavedGame)oin.readObject();
+			game.loadGame(sg);
+		}
+		catch (Exception e) {
+			// Just stick with the randomly generated room
+			e.printStackTrace();
+		}
+        listener.move(game);
     }
     void backToMainMenu() {
         listener.move(new MenuScene(width, height, listener));

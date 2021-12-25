@@ -1,5 +1,6 @@
 package chessroguelike.game.map;
 import chessroguelike.textRenderer.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -175,17 +176,14 @@ public interface Move {
 
     
     // Hashmap for storing referecing the names with their moves
-    public static HashMap<String, Move[]> pieces = new HashMap<String, Move[]>(){
-    {
-        put("Knight", knight);
-        put("Pawn", pawn);
-        put("Rook", rook);
-    }
-    };
-    
+    public static final HashMap<String, Move[]> pieces = new HashMap<String, Move[]>(){ {
+		put("Knight", knight);
+		put("Pawn", pawn);
+		put("Rook", rook);
+	} };
     // get an array of keys
-    public static Object[] piece_names = pieces.keySet().toArray();
-
+    public static final String[] piece_names = {"Knight", "Pawn", "Rook"};
+    
     // create new random generator
     Random generator = new Random();
 

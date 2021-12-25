@@ -14,15 +14,15 @@ class Main {
 	public static Scene activeScene;
 	public static void main(String[] args) {
 
-        try {
-            // creates new text file called "err.txt"
-            FileOutputStream f =new FileOutputStream("err.txt");
+        //try {
+            //// creates new text file called "err.txt"
+            //FileOutputStream f = new FileOutputStream("err.txt");
 
-            // prints all system errors & exceptions to text file (instead of disrupting console)
-            System.setErr(new PrintStream(f));
-        } catch (FileNotFoundException f) {
-            // This should never happen
-        }
+            //// prints all system errors & exceptions to text file (instead of disrupting console)
+            //System.setErr(new PrintStream(f));
+        //} catch (FileNotFoundException f) {
+            //// This should never happen
+        //}
         // creates variable for getting keyboard input
 		Input inputs = new Input(System.in);
 

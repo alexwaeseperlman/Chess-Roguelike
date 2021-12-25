@@ -18,22 +18,41 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
+ * Saved game objects hold enough information to load back to a previous state. They are serializable
+ * */
+class SavedGame implements Serializable {
+	public PlayerStats stats;
+	public Room room;
+	public Piece player;
+	public String piece_name;
+
+	/**
+	 * Apply the saved data to a game scene
+	 * */
+	void apply(GameScene gs) {
+		gs.stats = stats;
+		gs.room = room;
+		gs.player = player;
+		gs.piece_name = piece_name;
+	}
+}
+/**
 * Subclass of Scene used to display the main game (room
 * with player and enemies, enemy engine, and text)
 * Handles player movement, and switches to {@link DeathScene}
 * or {@link TransitionScene} depending on result
 * also has save option
 */
-class GameScene extends Scene implements Serializable {
+public class GameScene extends Scene {
     // declare room, player, enemy engine, and text
-	Room room;
-	Piece player;
+	public Room room;
+	public Piece player;
     Engine eng;
 	Text t;
 
     // declare # of enemies, player stats, and piece name
     int enemies;
-    PlayerStats stats;
+    public PlayerStats stats;
     public String piece_name;
 
     /**
@@ -63,82 +82,95 @@ class GameScene extends Scene implements Serializable {
         this.stats = stats;
 
         // Instruction text to be displaye on screen
-		t = new Text("Use 'u' 'h' 'j' & 'k' to select moves. Press m or enter to make your selected move. \nPress escape to leave move select mode, 'q' to quit, 's' to save." + "\n\nCurrently playing as: " + piece_name, 25);
+		t = new Text("Use 'h' 'j' 'k' & 'l' to select moves. Press m or enter to make your selected move. \nPress escape to leave move select mode, 'q' to quit, 's' to save." + "\n\nCurrently playing as: " + piece_name, 25);
 
         // creates player
-		player = new Piece() {
-            // draws the player on the topleft corner
-			@Override
-			public ArrayList<Pixel> drawPiece() {
-				ArrayList<Pixel> out = new ArrayList<Pixel>();
-				out.add(new Pixel('P', 0, 0, 5));
-				return out;
-			}
-		};
+		player = new Piece('P');
 
         // generates random number of enemies between 3 an 5 (inclusive)
         enemies = 3 + (int) (Math.random() * 3);
         // generates the room
 		room = Room.generate(20, 10, enemies, player, new Position(3, 3));
-        // assigns new enemy engine to the room
+
+		initialize();
+    }
+
+   /**
+	* Construct a game scene from a saved file
+	* @param width : Width of scene
+	* @param height : Height of scene
+	* @param saved : Saved game object containing information that should be loaded
+	* @param listener : {@link Listener} To change scenes and get input
+	* */
+	GameScene(int width, int height, SavedGame saved, Listener listener) {
+		super(width, height, listener);
+		saved.apply(this);
+		initialize();
+	}
+
+	// Add all the necessary objects to the renderer and construct an engine
+	public void initialize() {
+		objects.clear();
+		System.err.println("clear");
+    	// assigns new enemy engine to the room
         eng = new Engine(room);
+		System.err.println("engine");
         // visualize the player moves
 		player.visualizingMove = true;
+		System.err.println("visualizing");
         // get player moves according to its type (piece_name)
 		player.setMoves(Move.pieces.get(piece_name));
+		System.err.println("set moves");
 
         // put the room and the text on screen
-		objects.put(room, new Position(1, 1));
+		objects.put(room.renderer, new Position(1, 1));
 		objects.put(t, new Position(25, 1));
-    }
+		room.renderer.refresh();
+		System.err.println("objects");
+	}
     
     /**
     * Handles user input and acts accordingly
     * @param c : character inputted
     */
 	public void input(char c) {
-		Position playerPosition = player.moves[player.selectedMove].simulate(player, room);
+		Position playerPosition = player.getSelectedMove().simulate(player, room);
         // move up (decrease in y direction)
         if (c == 'k'){
             player.increase(new Position(0, 1), playerPosition, room);
-            player.visualizingMove = true;
         }
 
         // move down (increase in y direction)
         if (c == 'j'){
             player.increase(new Position(0, -1), playerPosition, room);
-            player.visualizingMove = true;
         }
 
         // move left (increase in x direction)
         if (c == 'h'){
             player.increase(new Position(1, 0), playerPosition, room);
-            player.visualizingMove = true;
         }
 
         // move right (decrease in x direction)
         if (c == 'l'){
             player.increase(new Position(-1, 0), playerPosition, room);
-            player.visualizingMove = true;
         }
 
-		if (c == '\u001B') player.visualizingMove = false;
 
 		if (c == 'm' || c == 13) {
-            boolean allowed = player.moves[player.selectedMove].allowed(player, room);
+            boolean allowed = player.getSelectedMove().allowed(player, room);
             if (allowed) {
                 // apply the move
-                Piece target = player.moves[player.selectedMove].apply(player, room);
+                Piece target = player.getSelectedMove().apply(player, room);
 
                 // refresh screen, then sleep for 0.5 seconds
                 // so user can see what they have done
                 refreshScreen();
-                try {
-                    Thread.sleep(500);
-                }
-                catch(InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
+                //try {
+                    //Thread.sleep(500);
+                //}
+                //catch(InterruptedException ex) {
+                    //Thread.currentThread().interrupt();
+                //}
 
                 // Only move ai if player didn't take a piece
                 if (target == null){
@@ -160,10 +192,10 @@ class GameScene extends Scene implements Serializable {
         }      
 
         // if the player can attack, change the line color to red
-        player.attacking = player.moves[player.selectedMove].wouldAttack(player, room);
+        player.attacking = player.getSelectedMove().wouldAttack(player, room);
 
         // if the move is out of bounds, do not display
-        player.visualizingMove = player.moves[player.selectedMove].allowed(player, room);
+        player.visualizingMove = player.getSelectedMove().allowed(player, room);
 
         if (!room.pieces.containsKey(player)) {
             // Go to you lose screen
@@ -178,41 +210,22 @@ class GameScene extends Scene implements Serializable {
 	}
 
     void saveGame() {
-        try {
-            FileOutputStream fileOutputStream = 
-                new FileOutputStream("SavedGames.ser");
-            ObjectOutputStream objectOutputStream = 
-                new ObjectOutputStream(fileOutputStream);
-            objectOutputStream.writeObject(this);
-            objectOutputStream.close();
-            fileOutputStream.close();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
+        try (
+			FileOutputStream fos = new FileOutputStream("SavedGame.ser");
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+		){
+			SavedGame saved = save();
+            oos.writeObject(saved);
+        } catch (Exception e) {
+			e.printStackTrace();
         }
-    }
-
-    void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        ois.defaultReadObject();
-        this.room = (Room) ois.readObject();
-        this.player = (Piece) ois.readObject();
-        this.eng = (Engine) ois.readObject();
-    }
-
-    void loadGame() throws IOException, ClassNotFoundException, FileNotFoundException {
-        FileInputStream fin = new FileInputStream("SavedGames.ser");
-        ObjectInputStream oin = new ObjectInputStream(fin);
-        this.room = (Room) oin.readObject();
-        this.player = (Piece) oin.readObject();
-        this.eng = (Engine) oin.readObject();
-        oin.close();
-    }
+	}
 
     void backToMainMenu() {
         listener.move(new MenuScene(width, height, listener));
     }
     void toGameSavedMsg() {
-        listener.move(new GameSavedMsg(width, height, listener));
+        listener.move(new LoadGameScene(width, height, listener));
     }
 
     /**
@@ -228,9 +241,28 @@ class GameScene extends Scene implements Serializable {
     void win() {
         // update the stats of the player
         stats.enemies_killed += enemies;
-        stats.levels_completed ++;
+        stats.levels_completed++;
         stats.addPiece(piece_name);
         // move the the transition scene
         listener.move(new TransitionScene(width, height, listener, stats));
     }
+	/**
+	 * Generate a {@link SavedGame} object from a {@link GameScene}
+	 * */
+	SavedGame save() {
+		SavedGame saved = new SavedGame();
+		saved.stats = this.stats;
+		saved.room = this.room;
+		saved.player = this.player;
+		saved.piece_name = this.piece_name;
+		return saved;
+	}
+
+	/**
+	 * Apply a saved game to this scene and reinitialize
+	 * */
+	void loadGame(SavedGame saved) {
+		saved.apply(this);
+		initialize();
+	}
 }

@@ -1,11 +1,12 @@
 package chessroguelike.textRenderer;
 
 import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * Render object that draws a rectangle
  **/
-public class Rect implements RenderObject {
+public class Rect implements RenderObject, Serializable {
     public int width, height;
 
     public Color bg = Color.BLACK, fg = Color.WHITE;

@@ -1,10 +1,11 @@
 package chessroguelike.textRenderer;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * A render object for drawing text with simple line wrapping
  **/
-public class Text implements RenderObject {
+public class Text implements RenderObject, Serializable {
     // If the delimiter is set it signals that lines can only wrap
     // in places where its present.
     // This allows users to prevent lines from wrapping mid-word

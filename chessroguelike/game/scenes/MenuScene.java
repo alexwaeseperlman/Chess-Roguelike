@@ -23,7 +23,7 @@ public class MenuScene extends Scene {
 						break;
                     // "Saved games" button
 					case 1:
-						listener.move(new SavedGameScene(width, height, listener));
+						listener.move(new LoadGameScene(width, height, listener));
 						break;
                     // "Instructions" button
 					case 2:

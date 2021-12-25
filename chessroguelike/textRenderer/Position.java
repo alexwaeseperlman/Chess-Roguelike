@@ -1,8 +1,11 @@
 package chessroguelike.textRenderer;
+
+import java.io.Serializable;
+
 /**
  * Simple data class to store an integer position in 2d space
  * */
-public class Position {
+public class Position implements Serializable {
     // x and y of this position
 	public int x, y, layer = 0;
 	public Position(int x, int y) {
