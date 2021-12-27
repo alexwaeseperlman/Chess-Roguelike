@@ -1,4 +1,3 @@
 *.class
 .breakpoints
 err.txt
-*.ser
