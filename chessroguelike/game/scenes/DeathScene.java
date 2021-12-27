@@ -50,8 +50,8 @@ class DeathScene extends Scene{
     t = new Text("YOU DIED, try harder next time \n" + stats.displayStats() + "\nPress 'k' and 'j' to cycle through options.", 21);
     
     // put the menu and the text on the screen
-    objects.put(menu, new Position(1, 1));
-	objects.put(t, new Position(31, 2));  
+    objects.put(menu, new Position(2, 2));
+	objects.put(t, new Position(40, 2));  
     }
 
     /*

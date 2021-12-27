@@ -37,7 +37,7 @@ class TransitionScene extends Scene{
         , 19);
 
         // options menu
-        menu = new Menu(new String[] {"Next level", "Main Menu", "Save Game", "Instructions", "Exit Game"}, 30, 1, 2, new Menu.Listener(){
+        menu = new Menu(new String[] {"Next level", "Main Menu", "Instructions", "Exit Game"}, 30, 1, 2, new Menu.Listener(){
         public void onSelect(int selection){
             switch(selection){
                 case 0:
@@ -47,12 +47,9 @@ class TransitionScene extends Scene{
                     listener.move(new InstructionsScene(width, height, listener));
                     break;
                 case 2:
-                    // INSERT SCENE FOR SAVING GAME
-                    break;
-                case 3:
                     listener.move(new MenuScene(width - 25, height, listener));
                     break;
-                case 4:
+                case 3:
                     listener.exit();
                     break;
             
@@ -61,8 +58,8 @@ class TransitionScene extends Scene{
         });
 
         // putting the menu and text on the screen
-        objects.put(menu, new Position(1, 1));
-        objects.put(t, new Position(32, 2));    
+        objects.put(menu, new Position(2, 2));
+        objects.put(t, new Position(40, 2));    
     }
 
     // for handling user input to cycle through the options

@@ -20,20 +20,26 @@ class LoadGameScene extends Scene {
 	Text date = new Text("Date"), name = new Text("Name"), level = new Text("Level");
 	Menu dates, names, levels;
 
-	final int columnWidth;
-
     LoadGameScene(int width, int height, Listener listener) {
         super(width, height, listener);
-        //objects.put(new Text("Game loaded, press 'c' to continue, or 'b' to go back to main menu.", 25), new Position(2, 2));
-		columnWidth = width/3;
-		objects.put(date, new Position(0, 0, 10));
-		objects.put(name, new Position(columnWidth, 0, 10));
-		objects.put(level, new Position(columnWidth*2, 0, 10));
+		//objects.put(new Text("Game loaded, press 'c' to continue, or 'b' to go back to main menu.", 25), new Position(2, 2));
 		loadSavedGames();
-		buildMenu();
+		buildTable(2, 2, width-10, height);
     }
 
-	void buildMenu() {
+	void buildTable(int x, int y, int width, int height) {
+		int columnWidth = (width)/3;
+		// Remove any previous objects
+		objects.remove(date);
+		objects.remove(name);
+		objects.remove(level);
+		objects.remove(dates);
+		objects.remove(names);
+		objects.remove(levels);
+
+		objects.put(date, new Position(x, y, 10));
+		objects.put(name, new Position(x+columnWidth, y, 10));
+		objects.put(level, new Position(x+columnWidth*2, y, 10));
 		// Build the dates list
 		String[] dates = new String[games.size()];
 		for (int i = 0; i < games.size(); i++) {
@@ -43,7 +49,7 @@ class LoadGameScene extends Scene {
 		this.dates.hideBorders();
 		// Render the text with no offset
 		this.dates.placeText(0);
-		objects.put(this.dates, new Position(0, 2, 0));
+		objects.put(this.dates, new Position(x, y+2, 0));
 
 		// Build the name list
 		String[] names = new String[games.size()];
@@ -54,11 +60,17 @@ class LoadGameScene extends Scene {
 				names[i] = names[i].substring(0, columnWidth-5) + "...";
 			}
 		}
-		this.names = new Menu(names, columnWidth, 0, 1);
+		// Use the names menu for listeners
+		this.names = new Menu(names, columnWidth, 0, 1, new Menu.Listener() {
+			@Override
+			public void onSelect(int i) {
+				chooseFile(i);
+			}
+		});
 		this.names.hideBorders();
 		// Render the text with no offset
 		this.names.placeText(0);
-		objects.put(this.names, new Position(columnWidth, 2, 0));
+		objects.put(this.names, new Position(x+columnWidth, y+2, 0));
 
 		// Build the level list
 		String[] levels = new String[games.size()];
@@ -69,7 +81,7 @@ class LoadGameScene extends Scene {
 		this.levels.hideBorders();
 		// Render the text with no offset
 		this.levels.placeText(0);
-		objects.put(this.levels, new Position(2*columnWidth, 2, 0));
+		objects.put(this.levels, new Position(x+2*columnWidth, y+2, 0));
 	}
 
 	public void input(char c) {  // b to go "back" to main menu
@@ -80,6 +92,7 @@ class LoadGameScene extends Scene {
 			up();
 		}
 		else if (c == 'j') down();
+		else if (c == 13) this.names.select();
 		refreshScreen();
 	}
 
@@ -97,6 +110,7 @@ class LoadGameScene extends Scene {
     void chooseFile(int id) {
 		GameScene game = new GameScene(width, height, listener);
 		game.loadGame(games.get(id));
+		listener.move(game);
 	}
 	/**
 	 * Load all files from the saved game directory.

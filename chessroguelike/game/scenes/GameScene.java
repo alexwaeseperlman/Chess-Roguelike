@@ -105,15 +105,16 @@ public class GameScene extends Scene {
 		objects.clear();
     	// assigns new enemy engine to the room
         eng = new Engine(room);
-        // visualize the player moves
-		player.visualizingMove = true;
         // get player moves according to its type (piece_name)
 		player.setMoves(Move.pieces.get(piece_name));
+        // visualize the player moves
+		player.visualizingMove = true;
 
         // put the room and the text on screen
 		objects.put(room.renderer, new Position(1, 1));
 		objects.put(t, new Position(25, 1));
 		room.renderer.refresh();
+		refreshScreen();
 	}
     
     /**
@@ -213,7 +214,7 @@ public class GameScene extends Scene {
 		objects.put(saveGamePopup, new Position(5, 5, 10));
 	}
     void saveGame(String fileName) {
-		// TODO: Use smarter filename joining
+		// TODO: Use smarter file path joining
 		File f = new File(LoadGameScene.savePath + "/" + fileName + ".ser");
 		// Don't overwrite existing files
 		if (f.exists()) {

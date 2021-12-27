@@ -147,17 +147,28 @@ public class Room implements Serializable {
     }
 
 	 
+	/**
+	 * Custom method to deserialize room objects. This gets called when {@link SavedGame} objects are being loaded
+	 * @param inp : The input stream for the object being loaded
+	 * */
     private void readObject(ObjectInputStream inp) throws ClassNotFoundException, IOException {       
+		// Read width and height
 		width = inp.readInt();
         height = inp.readInt();
+		// Read all the pieces
         HashMap<Piece, Position> loadedPieces = (HashMap<Piece, Position>)inp.readObject();
 		setup();
+		// Put each piece inside the renderer
 		for (Piece p : loadedPieces.keySet()) {
 			pieces.put(p, loadedPieces.get(p));
 			renderer.objects.put(p, loadedPieces.get(p));
 		}
     }
  
+	/**
+	 * Custom method for serializing room objects. This is called when {@link SavedGame} objects are being saved
+	 * @param out : The output stream for the object being saved
+	 * */
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.writeInt(width);
         out.writeInt(height);
