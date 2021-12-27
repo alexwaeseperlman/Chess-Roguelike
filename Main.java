@@ -27,7 +27,7 @@ class Main {
 		Input inputs = new Input(System.in);
 
         // initialize current scene to MenuScene (with new listener)
-		activeScene = new MenuScene(50, 15, new Scene.Listener() {
+		activeScene = new MenuScene(100, 30, new Scene.Listener() {
             // overrides exit() function to quit the whole program
 			@Override
 			public void exit() {

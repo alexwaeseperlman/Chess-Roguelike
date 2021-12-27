@@ -20,8 +20,13 @@ class UserInterfaceTest extends Scene {
 				lastInput.content = "Your last input was: \n" + text;
 				objects.remove(textbox);
 			}
+			@Override
+			public void cancelled() {
+				lastInput.content = "Cancelled.";
+				objects.remove(textbox);
+			}
 		});
-		menu = new Menu(new String[]{ "Hello world", "Open a text box" }, 30, 10, new Menu.Listener() {
+		menu = new Menu(new String[]{ "Hello world", "Open a text box" }, 30, 1, 2, new Menu.Listener() {
 			@Override
 			public void onSelect(int selection) {
 				switch (selection) {
@@ -52,13 +57,6 @@ class UserInterfaceTest extends Scene {
 class UserInterface {
 	public static Scene activeScene;
 	public static void main(String[] args) {
-        try {
-            FileOutputStream f = new FileOutputStream("err.txt");
-    
-            System.setErr(new PrintStream(f));
-        } catch (FileNotFoundException f) {
-            // This should never happen
-        }
 		Input inputs = new Input(System.in);
 
 		activeScene = new UserInterfaceTest(70, 25, new Scene.Listener() {

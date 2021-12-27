@@ -2,6 +2,7 @@ package chessroguelike.game.scenes;
 
 import chessroguelike.game.Scene;
 import chessroguelike.game.map.*;
+import chessroguelike.*;
 import chessroguelike.Menu;
 import chessroguelike.textRenderer.*;
 import chessroguelike.game.engine.*;
@@ -9,33 +10,8 @@ import chessroguelike.game.PlayerStats;
 import java.util.ArrayList;
 
 // regular imports
-import java.io.Serializable;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
-/**
- * Saved game objects hold enough information to load back to a previous state. They are serializable
- * */
-class SavedGame implements Serializable {
-	public PlayerStats stats;
-	public Room room;
-	public Piece player;
-	public String piece_name;
-
-	/**
-	 * Apply the saved data to a game scene
-	 * */
-	void apply(GameScene gs) {
-		gs.stats = stats;
-		gs.room = room;
-		gs.player = player;
-		gs.piece_name = piece_name;
-	}
-}
 /**
 * Subclass of Scene used to display the main game (room
 * with player and enemies, enemy engine, and text)
@@ -49,6 +25,22 @@ public class GameScene extends Scene {
 	public Piece player;
     Engine eng;
 	Text t;
+
+	// A flag that decides whether input should go to the saveGame popup or the actual game
+	public boolean savingGame = false;
+
+	TextBox.Listener savedGameListener = new TextBox.Listener() {
+		@Override
+		public void submitted(String name) {
+			saveGame(name);
+		}
+
+		@Override
+		public void cancelled() {
+			cancelSaveGame();
+		}
+	};
+	TextBox saveGamePopup = new TextBox("Save Game", 40, 3, savedGameListener);
 
     // declare # of enemies, player stats, and piece name
     int enemies;
@@ -111,22 +103,17 @@ public class GameScene extends Scene {
 	// Add all the necessary objects to the renderer and construct an engine
 	public void initialize() {
 		objects.clear();
-		System.err.println("clear");
     	// assigns new enemy engine to the room
         eng = new Engine(room);
-		System.err.println("engine");
         // visualize the player moves
 		player.visualizingMove = true;
-		System.err.println("visualizing");
         // get player moves according to its type (piece_name)
 		player.setMoves(Move.pieces.get(piece_name));
-		System.err.println("set moves");
 
         // put the room and the text on screen
 		objects.put(room.renderer, new Position(1, 1));
 		objects.put(t, new Position(25, 1));
 		room.renderer.refresh();
-		System.err.println("objects");
 	}
     
     /**
@@ -134,6 +121,12 @@ public class GameScene extends Scene {
     * @param c : character inputted
     */
 	public void input(char c) {
+		// Handle the saved game popup
+		if (savingGame) {
+			saveGamePopup.type(c);
+			refreshScreen();
+			return;
+		}
 		Position playerPosition = player.getSelectedMove().simulate(player, room);
         // move up (decrease in y direction)
         if (c == 'k'){
@@ -180,7 +173,7 @@ public class GameScene extends Scene {
         }
         if (c == 's') {
             saveGame();
-            toGameSavedMsg();
+            //toGameSavedMsg();
         }
         if (c == 'q') {
             backToMainMenu();
@@ -209,16 +202,39 @@ public class GameScene extends Scene {
 		else refreshScreen();
 	}
 
-    void saveGame() {
+
+	void cancelSaveGame() {
+		objects.remove(saveGamePopup);
+		refreshScreen();
+	}
+	void saveGame() {
+		savingGame = true;
+		saveGamePopup.title.content = "Enter a name for your saved file";
+		objects.put(saveGamePopup, new Position(5, 5, 10));
+	}
+    void saveGame(String fileName) {
+		// TODO: Use smarter filename joining
+		File f = new File(LoadGameScene.savePath + "/" + fileName + ".ser");
+		// Don't overwrite existing files
+		if (f.exists()) {
+			saveGamePopup.title.content = "That file already exists.";
+			refreshScreen();
+			return;
+		}
+		// This means that the file was saved
+		savingGame = false;
         try (
-			FileOutputStream fos = new FileOutputStream("SavedGame.ser");
+			FileOutputStream fos = new FileOutputStream(LoadGameScene.savePath + "/" + fileName + ".ser");
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
-		){
+		) {
 			SavedGame saved = save();
+			saved.name = fileName;
             oos.writeObject(saved);
         } catch (Exception e) {
 			e.printStackTrace();
         }
+		// Close the popup
+		cancelSaveGame();
 	}
 
     void backToMainMenu() {

@@ -21,9 +21,10 @@ public class Menu extends Renderer {
     // Text objects to draw inside the buttons
     Text[] texts;
 	
-	int buttonWidth, buttonHeight;
+	int buttonWidth, buttonHeight, paddingHeight;
 
     int selection = 0;
+
 
     Color selected = new Color(128, 128, 128);
     Listener l;
@@ -33,11 +34,11 @@ public class Menu extends Renderer {
      * to each entry in `options[]`
      * @param options A list of button titles
      * @param width The menu's width
-     * @param height The menu's height
+     * @param height The height of each button in the menu
      * @param l A listener object for the constructed menu
      **/
-	public Menu(String options[], int width, int height, Listener l) {
-		super(width, height);
+	public Menu(String options[], int width, int height, int paddingHeight, Listener l) {
+		super(width, (height+paddingHeight)*options.length+paddingHeight);
         this.l = l;
         
         // Construct an array to store all the render objects that the menu uses
@@ -46,22 +47,34 @@ public class Menu extends Renderer {
 
         // The button width is the menu width-1 because they have borders which take up one unitc:w
 		buttonWidth = width-1;
-        // They also have a default height of 1
-		buttonHeight = 1;
+		buttonHeight = height;
+		this.paddingHeight = paddingHeight;
 
         // Construct each button
         for (int i = 0; i < options.length; i++) {
             // A button consists of a rect with a text object on top of it
             buttons[i] = new Rect(buttonWidth, buttonHeight);
             texts[i] = new Text(options[i], buttonWidth);
-
-            // Text is placed in a position offset to the right 
-            // by 3 units from the edge of the rectangle.
-            // This was decided on through trial and error because it looks nice
-            this.objects.put(buttons[i], new Position(0, i*height/options.length, 0));
-            this.objects.put(texts[i], new Position(3, i*height/options.length+1, 2));
         }
+		placeText();
+		showBorders();
         update();
+	}
+
+    /**
+     * Construct a menu that doesn't handle inputs with a button corresponding
+     * to each entry in `options[]`
+     * @param options A list of button titles
+     * @param width The menu's width
+     * @param height The height of each button in the menu
+     **/
+	public Menu(String options[], int width, int height, int paddingHeight) {
+		this(options, width, height, paddingHeight, new Listener() {
+			@Override
+			public void onSelect(int i) {
+				// Do nothing
+			}
+		});
 	}
 
     /**
@@ -93,6 +106,42 @@ public class Menu extends Renderer {
         selection = (buttons.length + selection - 1) % buttons.length;
         update();
     }
+
+	/**
+	 * Hide the borders around each button
+	 * */
+	public void hideBorders() {
+		for (int i = 0; i < buttons.length; i++) {
+			this.objects.remove(buttons[i]);
+		}
+	}
+	/**
+	 * display the borders around each button
+	 * */
+	public void showBorders() {
+		for (int i = 0; i < buttons.length; i++) {
+            this.objects.put(buttons[i], new Position(0, i*(buttonHeight+paddingHeight), 0));
+		}
+	}
+
+	/**
+	 * Render text with the default offset of 3 units
+	 * */
+	public void placeText() {
+		// Text is placed in a position offset to the right 
+		// by 3 units from the edge of the rectangle.
+		// This was decided on through trial and error because it looks nice
+		placeText(3);
+	}
+	/**
+	 * Add the text objects for each button
+	 * */
+	public void placeText(int offset) {
+		for (int i = 0; i < buttons.length; i++) {
+			this.objects.remove(texts[i]);
+            this.objects.put(texts[i], new Position(offset, i*(buttonHeight+paddingHeight)+1, 2));
+		}
+	}
 
     /**
      * Move the currently selected button down

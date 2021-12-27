@@ -13,6 +13,11 @@ public class TextBox extends Renderer {
          * @param text The content that the user entered
          **/
         public void submitted(String text);
+
+		/**
+		 * Called if the user presses escape
+		 * */
+		public void cancelled();
     }
 	Rect box;
     Text textDisplay;
@@ -21,7 +26,7 @@ public class TextBox extends Renderer {
 	String text = "";
 
 	// Text that is drawn on top of the text box
-	Text title;
+	public Text title;
 
     Listener l;
 
@@ -84,5 +89,13 @@ public class TextBox extends Renderer {
 	public void clear() {
 		text = "";
 		update();
+	}
+
+	/**
+	 * Called if the user presses escape
+	 * */
+	public void cancel() {
+		l.cancelled();
+		clear();
 	}
 }

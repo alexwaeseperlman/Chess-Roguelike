@@ -25,7 +25,7 @@ class DeathScene extends Scene{
     - Instructions
     - Exit Game
     */
-    menu = new Menu(new String[] {"Restart", "Main Menu", "Instructions", "Exit Game"}, 30, 9, new Menu.Listener(){
+    menu = new Menu(new String[] {"Restart", "Main Menu", "Instructions", "Exit Game"}, 30, 1, 2, new Menu.Listener(){
       public void onSelect(int selection){
         switch(selection){
           case 0:

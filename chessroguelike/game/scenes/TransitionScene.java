@@ -4,6 +4,7 @@ import chessroguelike.game.Scene;
 import chessroguelike.game.PlayerStats;
 import chessroguelike.Menu;
 import chessroguelike.textRenderer.*;
+import chessroguelike.TextBox;
 
 import chessroguelike.game.map.Move;
 
@@ -36,7 +37,7 @@ class TransitionScene extends Scene{
         , 19);
 
         // options menu
-        menu = new Menu(new String[] {"Next level", "Main Menu", "Save Game", "Instructions", "Exit Game"}, 30, 11, new Menu.Listener(){
+        menu = new Menu(new String[] {"Next level", "Main Menu", "Save Game", "Instructions", "Exit Game"}, 30, 1, 2, new Menu.Listener(){
         public void onSelect(int selection){
             switch(selection){
                 case 0:
