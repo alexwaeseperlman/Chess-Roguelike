@@ -11,25 +11,24 @@ import java.util.ArrayList;
 
 /**
  * The scene that lets a user look at their saved files and sort through them.
- * */
+ **/
 class LoadGameScene extends Scene {
 	public static final String savePath = "saves/";
     Scene savedGameScene;
 	ArrayList<SavedGame> games = new ArrayList<SavedGame>();
-
 
 	Text date = new Text("Date"), name = new Text("Name"), level = new Text("Level");
 	Menu dates, names, levels;
 
     LoadGameScene(int width, int height, Listener listener) {
         super(width, height, listener);
-		objects.put(new Text("Load a game from below, or press 'b' to go back. Press 'd' to sort by date modified, 'n' to sort by name, or 'l' to sort by levels completed.", 50), new Position(4, 4));
+		objects.put(new Text("Load a game from below, or press 'b' to go back. Press 'd' to sort by date modified, 'n' to sort by name, or 'l' to sort by levels completed.", 50), new Position(2, 2));
 		loadSavedGames();
-		buildTable(4, 6, width-10, height);
+		buildTable(2, 5, width-15, height);
     }
 	
 	void buildTable(int x, int y, int width, int height) {
-		int columnWidth = (width)/3;
+		int columnWidth = 20;
 		// Remove any previous objects
 		objects.remove(date);
 		objects.remove(name);
@@ -39,8 +38,8 @@ class LoadGameScene extends Scene {
 		objects.remove(levels);
 
 		objects.put(date, new Position(x, y, 10));
-		objects.put(name, new Position(x+columnWidth, y, 10));
-		objects.put(level, new Position(x+columnWidth*2, y, 10));
+		objects.put(name, new Position(x+columnWidth, y, 5));
+		objects.put(level, new Position(x+columnWidth*2, y, 5));
 		// Build the dates list
 		String[] dates = new String[games.size()];
 		for (int i = 0; i < games.size(); i++) {
@@ -97,15 +96,15 @@ class LoadGameScene extends Scene {
 		}
 		else if (c == 'd') {
 			sortGamesByDate();
-			buildTable(4, 6, width-10, height);
+			buildTable(2, 5, width-15, height);
 		}
 		else if (c == 'l') {
 			sortGamesByLevel();
-			buildTable(4, 6, width-10, height);
+			buildTable(2, 5, width-15, height);
 		}
 		else if (c == 'n') {
 			sortGamesByName();
-			buildTable(4, 6, width-10, height);
+			buildTable(2, 5, width-15, height);
 		}
 		else if (c == 13) {
 			this.names.select();
