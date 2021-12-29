@@ -25,7 +25,7 @@ class LoadGameScene extends Scene {
         super(width, height, listener);
 		objects.put(new Text("Load a game from below, or press 'b' to go back. Press 'd' to sort by date modified, 'n' to sort by name, or 'l' to sort by levels completed.", 50), new Position(4, 4));
 		loadSavedGames();
-		buildTable(2, 2, width-10, height);
+		buildTable(4, 6, width-10, height);
     }
 	
 	void buildTable(int x, int y, int width, int height) {
