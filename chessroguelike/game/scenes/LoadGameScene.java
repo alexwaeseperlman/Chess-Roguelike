@@ -22,11 +22,11 @@ class LoadGameScene extends Scene {
 
     LoadGameScene(int width, int height, Listener listener) {
         super(width, height, listener);
-		//objects.put(new Text("Game loaded, press 'c' to continue, or 'b' to go back to main menu.", 25), new Position(2, 2));
+		objects.put(new Text("Load a game from below, or press 'b' to go back. Press 'd' to sort by date modified, 'n' to sort by name, or 'l' to sort by levels completed.", 50), new Position(4, 4));
 		loadSavedGames();
 		buildTable(2, 2, width-10, height);
     }
-
+	
 	void buildTable(int x, int y, int width, int height) {
 		int columnWidth = (width)/3;
 		// Remove any previous objects
@@ -85,17 +85,46 @@ class LoadGameScene extends Scene {
 	}
 
 	public void input(char c) {  // b to go "back" to main menu
-        if (c == 'b') {
-            backToMainMenu();
-        }
+		if (c == 'b') {
+		    backToMainMenu();
+		}
 		else if (c == 'k') {
 			up();
 		}
-		else if (c == 'j') down();
-		else if (c == 13) this.names.select();
+		else if (c == 'j') {
+			down();
+		}
+		else if (c == 'd') {
+			sortGamesByDate();
+			buildTable(4, 6, width-10, height);
+		}
+		else if (c == 'l') {
+			sortGamesByLevel();
+			buildTable(4, 6, width-10, height);
+		}
+		else if (c == 'n') {
+			sortGamesByName();
+			buildTable(4, 6, width-10, height);
+		}
+		else if (c == 13) {
+			this.names.select();
+		}
 		refreshScreen();
 	}
 
+	/**
+	* Wrappers for sorting routines
+	**/
+	void sortGamesByDate() {
+		Collections.sort(games, new CompareDate());
+	}
+	void sortGamesByLevel() {
+		Collections.sort(games, new CompareLevel());
+	}
+	void sortGamesByName() {
+		Collections.sort(games, new CompareName());
+	}
+	
 	void up() {
 		dates.up();
 		names.up();
@@ -106,8 +135,8 @@ class LoadGameScene extends Scene {
 		names.down();
 		levels.down();
 	}
-
-    void chooseFile(int id) {
+	
+	void chooseFile(int id) {
 		GameScene game = new GameScene(width, height, listener);
 		game.loadGame(games.get(id));
 		listener.move(game);
@@ -128,7 +157,7 @@ class LoadGameScene extends Scene {
 		try (
 			FileInputStream fin = new FileInputStream(name);
 			ObjectInputStream oin = new ObjectInputStream(fin);
-		){
+		) {
 			SavedGame sg = (SavedGame)oin.readObject();
 			games.add(sg);
 		}
@@ -141,6 +170,6 @@ class LoadGameScene extends Scene {
 	 * Return to main menu
 	 * */
     void backToMainMenu() {
-        listener.move(new MenuScene(width, height, listener));
+	    listener.move(new MenuScene(width, height, listener));
     }
 }
