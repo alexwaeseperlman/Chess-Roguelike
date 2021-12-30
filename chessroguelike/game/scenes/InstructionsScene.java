@@ -2,6 +2,7 @@ package chessroguelike.game.scenes;
 
 import chessroguelike.game.Scene;
 import chessroguelike.Menu;
+import chessroguelike.textRenderer.*;
 
 class InstructionsScene extends Scene {
 

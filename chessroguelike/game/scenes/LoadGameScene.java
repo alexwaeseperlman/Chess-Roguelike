@@ -14,20 +14,45 @@ import java.util.ArrayList;
  **/
 class LoadGameScene extends Scene {
 	public static final String savePath = "saves/";
-    Scene savedGameScene;
+	// Number of games that are displayed on each page
+	final int gamesPerPage = 8;
+	int currentPage = 0;
 	ArrayList<SavedGame> games = new ArrayList<SavedGame>();
 
 	Text date = new Text("Date"), name = new Text("Name"), level = new Text("Level");
+	Text page = new Text("Page 1/1");
 	Menu dates, names, levels;
 
     LoadGameScene(int width, int height, Listener listener) {
         super(width, height, listener);
-		objects.put(new Text("Load a game from below, or press 'b' to go back. Press 'd' to sort by date modified, 'n' to sort by name, or 'l' to sort by levels completed.", 50), new Position(2, 2));
+		objects.put(new Text("Load a game from below, or press 'b' to go back. Press 'd' to sort by date modified, 'n' to sort by name, or 'c' to sort by levels completed. Use 'l' and 'h' to switch between pages.", 50), new Position(2, 2));
 		loadSavedGames();
-		buildTable(2, 5, width-15, height);
+		rebuildTable();
+		updatePageMarker();
     }
-	
+
+	/**
+	 * Update the message that displays what page the user is on
+	 * */
+	void updatePageMarker() {
+		objects.remove(page);
+		// Add one to currentPage because it's zero indexed
+		// Use ceiling integer division to calculate the number of pages
+		// ceil(a/b) = floor((a+b-1)/b)
+		page.content = String.format("Page %d/%d", currentPage+1, (games.size() + gamesPerPage-1)/gamesPerPage);
+		objects.put(page, new Position(width-15, height-5));
+	}
+
+	/**
+	 * Build a table displaying all the game files. Deletes everything from the previous table
+	 * @param x : The x position of the top left corner of the table
+	 * @param y : The y position of the top left corner of the table
+	 * @param width : The width of the table
+	 * @param height : The height of the table
+	 * */
 	void buildTable(int x, int y, int width, int height) {
+		// First and last games that are displayed on this page
+		int firstGame = currentPage*gamesPerPage, lastGame = Math.min(games.size(), (currentPage+1)*gamesPerPage);
 		int columnWidth = 20;
 		// Remove any previous objects
 		objects.remove(date);
@@ -41,9 +66,9 @@ class LoadGameScene extends Scene {
 		objects.put(name, new Position(x+columnWidth, y, 5));
 		objects.put(level, new Position(x+columnWidth*2, y, 5));
 		// Build the dates list
-		String[] dates = new String[games.size()];
-		for (int i = 0; i < games.size(); i++) {
-			dates[i] = games.get(i).lastModified.toString();
+		String[] dates = new String[lastGame-firstGame];
+		for (int i = firstGame; i < lastGame; i++) {
+			dates[i-firstGame] = games.get(i).lastModified.toString();
 		}
 		this.dates = new Menu(dates, columnWidth, 0, 1);
 		this.dates.hideBorders();
@@ -52,12 +77,12 @@ class LoadGameScene extends Scene {
 		objects.put(this.dates, new Position(x, y+2, 0));
 
 		// Build the name list
-		String[] names = new String[games.size()];
-		for (int i = 0; i < games.size(); i++) {
+		String[] names = new String[lastGame-firstGame];
+		for (int i = firstGame; i < lastGame; i++) {
 			// Cut names off so they don't wrap
-			names[i] = games.get(i).name;
-			if (names[i].length() >= columnWidth) {
-				names[i] = names[i].substring(0, columnWidth-5) + "...";
+			names[i-firstGame] = games.get(i).name;
+			if (names[i-firstGame].length() >= columnWidth) {
+				names[i-firstGame] = names[i-firstGame].substring(0, columnWidth-5) + "...";
 			}
 		}
 		// Use the names menu for listeners
@@ -73,9 +98,9 @@ class LoadGameScene extends Scene {
 		objects.put(this.names, new Position(x+columnWidth, y+2, 0));
 
 		// Build the level list
-		String[] levels = new String[games.size()];
-		for (int i = 0; i < games.size(); i++) {
-			levels[i] = Integer.toString(games.get(i).stats.levels_completed);
+		String[] levels = new String[lastGame-firstGame];
+		for (int i = firstGame; i < lastGame; i++) {
+			levels[i-firstGame] = Integer.toString(games.get(i).stats.levels_completed);
 		}
 		this.levels = new Menu(levels, columnWidth, 0, 1);
 		this.levels.hideBorders();
@@ -84,27 +109,48 @@ class LoadGameScene extends Scene {
 		objects.put(this.levels, new Position(x+2*columnWidth, y+2, 0));
 	}
 
+	/**
+	 * Call {@link #buildTable(int, int, int, int)} with default parameters
+	 * */
+	void rebuildTable() {
+		buildTable(2, 5, width-15, height);
+	}
+
 	public void input(char c) {  // b to go "back" to main menu
+		boolean changedTable = true;
 		if (c == 'b') {
 		    backToMainMenu();
 		}
+		// Moving up and down
 		else if (c == 'k') {
 			up();
 		}
 		else if (c == 'j') {
 			down();
 		}
+		// Types of sorting
 		else if (c == 'd') {
 			sortGamesByDate();
-			buildTable(2, 5, width-15, height);
+			rebuildTable();
 		}
-		else if (c == 'l') {
+		else if (c == 'c') {
 			sortGamesByLevel();
-			buildTable(2, 5, width-15, height);
+			rebuildTable();
 		}
 		else if (c == 'n') {
 			sortGamesByName();
-			buildTable(2, 5, width-15, height);
+			rebuildTable();
+		}
+		// Page switching
+		else if (c == 'l' && currentPage+1 < (games.size()+gamesPerPage-1)/gamesPerPage) {
+			currentPage++;
+			rebuildTable();
+			updatePageMarker();
+		}
+		else if (c == 'h' && currentPage-1 >= 0) {
+			currentPage--;
+			rebuildTable();
+			updatePageMarker();
 		}
 		else if (c == 13) {
 			this.names.select();
@@ -119,17 +165,24 @@ class LoadGameScene extends Scene {
 		Collections.sort(games, new CompareDate());
 	}
 	void sortGamesByLevel() {
-		Collections.sort(games, new CompareLevel());
+		// Level is sorted descending
+		Collections.sort(games, Collections.reverseOrder(new CompareLevel()));
 	}
 	void sortGamesByName() {
 		Collections.sort(games, new CompareName());
 	}
 	
+	/**
+	 * Move the cursor up on all relevant menu objects
+	 * */
 	void up() {
 		dates.up();
 		names.up();
 		levels.up();
 	}
+	/**
+	 * Move the cursor down on all relevant menu objects
+	 * */
 	void down() {
 		dates.down();
 		names.down();
