@@ -39,7 +39,8 @@ public class MenuScene extends Scene {
 		});
 
         // place the menu on the screen
-        objects.put(menu, new Position(2, 2));
+	objects.put(new Text("******************************\n****** CHESS ROGUE LIKE ******\n******************************\n", 44), new Position(2, 2));
+        objects.put(menu, new Position(2, 6));    
     }
 
 	public void input(char c) {
