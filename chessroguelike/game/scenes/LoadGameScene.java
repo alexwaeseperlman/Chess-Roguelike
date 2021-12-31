@@ -18,18 +18,21 @@ class LoadGameScene extends Scene {
 	final int gamesPerPage = 8;
 	int currentPage = 0;
 	ArrayList<SavedGame> games = new ArrayList<SavedGame>();
+	
+	// Index of current position in games, used to retrieve game name for file deletion
+	int idx;
 
 	Text date = new Text("Date"), name = new Text("Name"), level = new Text("Level");
 	Text page = new Text("Page 1/1");
 	Menu dates, names, levels;
 
-    LoadGameScene(int width, int height, Listener listener) {
-        super(width, height, listener);
-		objects.put(new Text("Load a game from below, or press 'b' to go back. Press 'd' to sort by date modified, 'n' to sort by name, or 'c' to sort by levels completed. Use 'l' and 'h' to switch between pages.", 50), new Position(2, 2));
+	LoadGameScene(int width, int height, Listener listener) {
+	super(width, height, listener);
+		objects.put(new Text("Load a game from below, or press 'b' to go back. Press 'd' to sort by date modified, 'n' to sort by name, or 'c' to sort by levels completed. Press 'x' to delete the game. Use 'l' and 'h' to switch between pages.", 50), new Position(2, 2));
 		loadSavedGames();
 		rebuildTable();
 		updatePageMarker();
-    }
+	}
 
 	/**
 	 * Update the message that displays what page the user is on
@@ -51,6 +54,7 @@ class LoadGameScene extends Scene {
 	 * @param height : The height of the table
 	 * */
 	void buildTable(int x, int y, int width, int height) {
+        idx = 0;
 		// First and last games that are displayed on this page
 		int firstGame = currentPage*gamesPerPage, lastGame = Math.min(games.size(), (currentPage+1)*gamesPerPage);
 		int columnWidth = 20;
@@ -113,11 +117,11 @@ class LoadGameScene extends Scene {
 	 * Call {@link #buildTable(int, int, int, int)} with default parameters
 	 * */
 	void rebuildTable() {
+        idx = 0;
 		buildTable(2, 5, width-15, height);
 	}
 
 	public void input(char c) {  // b to go "back" to main menu
-		boolean changedTable = true;
 		if (c == 'b') {
 		    backToMainMenu();
 		}
@@ -139,6 +143,10 @@ class LoadGameScene extends Scene {
 		}
 		else if (c == 'n') {
 			sortGamesByName();
+			rebuildTable();
+		}
+		else if (c == 'x') {  // delete the current game
+			deleteGame();
 			rebuildTable();
 		}
 		// Page switching
@@ -179,6 +187,7 @@ class LoadGameScene extends Scene {
 		dates.up();
 		names.up();
 		levels.up();
+		idx = Math.max(idx - 1, 0);  // move "up" in the games arraylist
 	}
 	/**
 	 * Move the cursor down on all relevant menu objects
@@ -187,6 +196,7 @@ class LoadGameScene extends Scene {
 		dates.down();
 		names.down();
 		levels.down();
+        	idx = Math.min(idx + 1, games.size());  // move "down" in the games
 	}
 	
 	void chooseFile(int id) {
@@ -218,11 +228,19 @@ class LoadGameScene extends Scene {
 			// Just stick with the randomly generated room
 			e.printStackTrace();
 		}
-    }
+    	}
+
+	void deleteGame() {
+		String filename = games.get(idx).name + ".ser";
+		games.remove(idx);
+		File deleteThis = new File(savePath + filename);
+		deleteThis.delete();
+	}
+
 	/**
 	 * Return to main menu
 	 * */
-    void backToMainMenu() {
-	    listener.move(new MenuScene(width, height, listener));
-    }
+	void backToMainMenu() {
+    		listener.move(new MenuScene(width, height, listener));
+	}
 }
