@@ -64,12 +64,15 @@ public class TextBox extends Renderer {
      * Input a character to this textbox while handling delete key presses.
      **/
     public void type(char input) {
+		// Handle enter
 		if (input == 13) {
 			submit();
 			return;
 		}
+		// Handle delete
 		if (input == 127) {
-			text = text.substring(0, text.length()-1);
+			// Don't delete on an empty string
+			if (text.length() > 0) text = text.substring(0, text.length()-1);
 		}
 		else text += input;
 		update();
