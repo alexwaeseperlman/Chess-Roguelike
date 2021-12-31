@@ -1,7 +1,7 @@
 package chessroguelike.game.scenes;
 
 import chessroguelike.game.Scene;
-import chessroguelike.Menu;
+import chessroguelike.*;
 import chessroguelike.game.map.*;
 
 import chessroguelike.textRenderer.*;
@@ -26,9 +26,28 @@ class LoadGameScene extends Scene {
 	Text page = new Text("Page 1/1");
 	Menu dates, names, levels;
 
-	LoadGameScene(int width, int height, Listener listener) {
-	super(width, height, listener);
-		objects.put(new Text("Load a game from below, or press 'b' to go back. Press 'd' to sort by date modified, 'n' to sort by name, or 'c' to sort by levels completed. Press 'x' to delete the game. Use 'l' and 'h' to switch between pages.", 50), new Position(2, 2));
+    // Searching from the user
+    // A flag that decides whether input should go to the sortGame pop up or the actual game
+	public boolean searching = false;
+
+    // textbox listener for getting user input
+	TextBox.Listener searchingListener = new TextBox.Listener() {
+		@Override
+		public void submitted(String name) {
+			searchGames(name);
+		}
+
+		@Override
+		public void cancelled() {
+			cancelSearching();
+		}
+	};
+    // actual textbox to be displayed
+	TextBox searchingPopUp = new TextBox("Sort Saved Games", 40, 3, searchingListener);
+
+    LoadGameScene(int width, int height, Listener listener) {
+        super(width, height, listener);
+		objects.put(new Text("Load a game from below, or press 'b' to go back. Press 'd' to sort by date modified, 'n' to sort by name, or 'c' to sort by levels completed. Press 's' to search. Use 'l' and 'h' to switch between pages. Press 'x' to delete a game.", 50), new Position(2, 2));
 		loadSavedGames();
 		rebuildTable();
 		updatePageMarker();
@@ -117,14 +136,23 @@ class LoadGameScene extends Scene {
 	 * Call {@link #buildTable(int, int, int, int)} with default parameters
 	 * */
 	void rebuildTable() {
-        idx = 0;
-		buildTable(2, 5, width-15, height);
+		buildTable(2, 8, width-15, height);
 	}
 
-	public void input(char c) {  // b to go "back" to main menu
+	public void input(char c) { 
+        // Handle the searching popup
+		if (searching) {
+			searchingPopUp.type(c);
+			refreshScreen();
+			return;
+		} 
+
+        boolean changedTable = true;
+        // b to go "back" to main menu
 		if (c == 'b') {
 		    backToMainMenu();
 		}
+
 		// Moving up and down
 		else if (c == 'k') {
 			up();
@@ -132,6 +160,7 @@ class LoadGameScene extends Scene {
 		else if (c == 'j') {
 			down();
 		}
+
 		// Types of sorting
 		else if (c == 'd') {
 			sortGamesByDate();
@@ -149,6 +178,13 @@ class LoadGameScene extends Scene {
 			deleteGame();
 			rebuildTable();
 		}
+
+        // searching
+        else if (c == 's') {
+			searchGames();
+			rebuildTable();
+		}
+
 		// Page switching
 		else if (c == 'l' && currentPage+1 < (games.size()+gamesPerPage-1)/gamesPerPage) {
 			currentPage++;
@@ -179,6 +215,13 @@ class LoadGameScene extends Scene {
 	void sortGamesByName() {
 		Collections.sort(games, new CompareName());
 	}
+    void searchGamesByName(String name){
+        // costs are assigned so that 1 modify = 2 deletes = 6 additions
+        Collections.sort(games, new SearchName(name, 3, 1, 6));
+    }
+    void searchGamesByLevel(int level){
+        Collections.sort(games, new SearchLevel(level));
+    }
 	
 	/**
 	 * Move the cursor up on all relevant menu objects
@@ -192,6 +235,7 @@ class LoadGameScene extends Scene {
 			idx = Math.min(currentPage * gamesPerPage + gamesPerPage - 1, games.size() - 1);
 		}
 	}
+
 	/**
 	 * Move the cursor down on all relevant menu objects
 	 * */
@@ -205,6 +249,10 @@ class LoadGameScene extends Scene {
 		}
 	}
 	
+    /**
+    * Selects and load the saved game file
+    * @param id : id of the game (as stored in games)
+    */
 	void chooseFile(int id) {
 		GameScene game = new GameScene(width, height, listener);
 		game.loadGame(games.get(id));
@@ -221,6 +269,7 @@ class LoadGameScene extends Scene {
 	}
 	/**
 	 * Load an individual saved game by name
+     * @param name : name of the saved game to load 
 	 * */
 	void loadSavedGame(String name) {
 		try (
@@ -249,6 +298,44 @@ class LoadGameScene extends Scene {
 		}
 		File deleteThis = new File(savePath + filename);
 		deleteThis.delete();
+    }
+
+    /**
+    * Creates new pop up window for the user to enter a search
+    */
+    void searchGames(){
+        searching = true;
+        searchingPopUp.title.content = "Enter number or name";
+        objects.put(searchingPopUp, new Position(5, 10, 10));
+    }
+
+    /**
+    * Sorts the games given a search key by the user
+    * Sorts by level if given key is an integer, by name if not
+    * @param key : string the user inputted
+    */
+    void searchGames(String key){
+        // if 'key' is an integer, search by level
+        if (key.matches("[0-9]+")){
+            searchGamesByLevel(Integer.parseInt(key));
+        }
+        // if key is not an integer, search by name
+        else{
+            searchGamesByName(key);
+        }
+        // rebuild the table and cancel searching
+        rebuildTable();
+        searching = false;
+        cancelSearching();
+    }
+
+
+    /**
+    * Cancels the search games pop up
+    */
+    void cancelSearching() {
+		objects.remove(searchingPopUp);
+		refreshScreen();
 	}
 
 	/**
