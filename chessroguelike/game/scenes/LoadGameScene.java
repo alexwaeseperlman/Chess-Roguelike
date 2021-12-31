@@ -19,7 +19,7 @@ class LoadGameScene extends Scene {
 	int currentPage = 0;
 	ArrayList<SavedGame> games = new ArrayList<SavedGame>();
 	
-	// Index of current position in games, used to retrieve game name for file deletion
+	// Index of currently selected position in games. Used to retrieve game name for file deletion
 	int idx;
 
 	Text date = new Text("Date"), name = new Text("Name"), level = new Text("Level");
@@ -199,7 +199,7 @@ class LoadGameScene extends Scene {
 		dates.down();
 		names.down();
 		levels.down();
-        	idx++;
+		idx++;
 		if (idx > Math.max(currentPage * gamesPerPage + gamesPerPage - 1, games.size() - 1)) {
 			idx = currentPage * gamesPerPage;
 		}
@@ -234,11 +234,19 @@ class LoadGameScene extends Scene {
 			// Just stick with the randomly generated room
 			e.printStackTrace();
 		}
-    	}
+	}
 
+	/**
+	 * Delete the game at the selected index
+	 * */
 	void deleteGame() {
 		String filename = games.get(idx).name + ".ser";
 		games.remove(idx);
+		// Go to previous page if this one is empty
+		if (currentPage == games.size()/gamesPerPage && games.size()%gamesPerPage == 0 && currentPage > 0) {
+			currentPage--;
+			updatePageMarker();
+		}
 		File deleteThis = new File(savePath + filename);
 		deleteThis.delete();
 	}
@@ -247,6 +255,6 @@ class LoadGameScene extends Scene {
 	 * Return to main menu
 	 * */
 	void backToMainMenu() {
-    		listener.move(new MenuScene(width, height, listener));
+		listener.move(new MenuScene(width, height, listener));
 	}
 }
