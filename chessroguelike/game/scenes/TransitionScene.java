@@ -44,10 +44,10 @@ class TransitionScene extends Scene{
                     listener.move(new GameScene(width, height, listener, piece_name, stats));
                     break;
                 case 1:
-                    listener.move(new InstructionsScene(width, height, listener));
+                    listener.move(new MenuScene(width, height, listener));
                     break;
                 case 2:
-                    listener.move(new MenuScene(width - 25, height, listener));
+                    listener.move(new InstructionsScene(width - 25, height, listener));
                     break;
                 case 3:
                     listener.exit();
