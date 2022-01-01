@@ -213,6 +213,7 @@ public class GameScene extends Scene {
 		saveGamePopup.title.content = "Enter a name for your saved file";
 		objects.put(saveGamePopup, new Position(5, 5, 10));
 	}
+    
     void saveGame(String fileName) {
 		// TODO: Use smarter file path joining
 		File f = new File(LoadGameScene.savePath + "/" + fileName + ".ser");

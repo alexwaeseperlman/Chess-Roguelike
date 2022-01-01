@@ -1,3 +1,12 @@
 {
-  "files": {}
+  "files": {
+    "chessroguelike/game/map/SearchName.java": [
+      {
+        "id": "6b4f8422-e67d-4598-a39f-3561f5571924",
+        "line": 54,
+        "version": 617,
+        "index": 1743
+      }
+    ]
+  }
 }
