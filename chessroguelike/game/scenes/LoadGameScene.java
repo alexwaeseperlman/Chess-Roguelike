@@ -54,7 +54,7 @@ class LoadGameScene extends Scene {
 	 * @param height : The height of the table
 	 * */
 	void buildTable(int x, int y, int width, int height) {
-        idx = 0;
+		idx = currentPage * gamesPerPage;
 		// First and last games that are displayed on this page
 		int firstGame = currentPage*gamesPerPage, lastGame = Math.min(games.size(), (currentPage+1)*gamesPerPage);
 		int columnWidth = 20;
@@ -187,7 +187,10 @@ class LoadGameScene extends Scene {
 		dates.up();
 		names.up();
 		levels.up();
-		idx = Math.max(idx - 1, 0);  // move "up" in the games arraylist
+		idx--;
+		if (idx < currentPage * gamesPerPage) {
+			idx = Math.min(currentPage * gamesPerPage + gamesPerPage - 1, games.size() - 1);
+		}
 	}
 	/**
 	 * Move the cursor down on all relevant menu objects
@@ -196,7 +199,10 @@ class LoadGameScene extends Scene {
 		dates.down();
 		names.down();
 		levels.down();
-        	idx = Math.min(idx + 1, games.size());  // move "down" in the games
+        	idx++;
+		if (idx > Math.max(currentPage * gamesPerPage + gamesPerPage - 1, games.size() - 1)) {
+			idx = currentPage * gamesPerPage;
+		}
 	}
 	
 	void chooseFile(int id) {
