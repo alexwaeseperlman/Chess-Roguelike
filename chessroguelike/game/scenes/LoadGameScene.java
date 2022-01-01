@@ -27,6 +27,7 @@ class LoadGameScene extends Scene {
     // A flag that decides whether input should go to the sortGame pop up or the actual game
 	public boolean searching = false;
 
+    // textbox listener for getting user input
 	TextBox.Listener searchingListener = new TextBox.Listener() {
 		@Override
 		public void submitted(String name) {
@@ -38,6 +39,7 @@ class LoadGameScene extends Scene {
 			cancelSearching();
 		}
 	};
+    // actual textbox to be displayed
 	TextBox searchingPopUp = new TextBox("Sort Saved Games", 40, 3, searchingListener);
 
     LoadGameScene(int width, int height, Listener listener) {
@@ -154,6 +156,7 @@ class LoadGameScene extends Scene {
 		else if (c == 'j') {
 			down();
 		}
+
 		// Types of sorting
 		else if (c == 'd') {
 			sortGamesByDate();
@@ -168,6 +171,7 @@ class LoadGameScene extends Scene {
 			rebuildTable();
 		}
 
+        // searching
         else if (c == 's') {
 			searchGames();
 			rebuildTable();
@@ -277,16 +281,18 @@ class LoadGameScene extends Scene {
     /**
     * Sorts the games given a search key by the user
     * Sorts by level if given key is an integer, by name if not
+    * @param key : string the user inputted
     */
     void searchGames(String key){
-        // if 'key' is an integer
+        // if 'key' is an integer, search by level
         if (key.matches("[0-9]+")){
             searchGamesByLevel(Integer.parseInt(key));
         }
-        // if key is not an integer (is a name)
+        // if key is not an integer, search by name
         else{
             searchGamesByName(key);
         }
+        // rebuild the table and cancel searching
         rebuildTable();
         searching = false;
         cancelSearching();
